@@ -1,0 +1,171 @@
+basePath: /api/v1
+definitions:
+  github_com_hoshina-dev_custapi_internal_models.ErrorResponse:
+    properties:
+      error:
+        example: error message
+        type: string
+    type: object
+  github_com_hoshina-dev_custapi_internal_models.OrganizationResponse:
+    properties:
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+      name:
+        example: Acme Corp
+        type: string
+    type: object
+  github_com_hoshina-dev_custapi_internal_models.UserResponse:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      name:
+        example: John Doe
+        type: string
+      organization_id:
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: A simple REST API for managing users and organizations
+  title: Customer API
+  version: "1.0"
+paths:
+  /organizations:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all organizations
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.OrganizationResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Get all organizations
+      tags:
+      - organizations
+  /organizations/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a single organization by their ID
+      parameters:
+      - description: Organization ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.OrganizationResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Get an organization by ID
+      tags:
+      - organizations
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Get all users
+      tags:
+      - users
+  /users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a single user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Get a user by ID
+      tags:
+      - users
+  /users/organization/{org_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get all users in a specific organization
+      parameters:
+      - description: Organization ID
+        in: path
+        name: org_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Get users by organization
+      tags:
+      - users
+swagger: "2.0"
