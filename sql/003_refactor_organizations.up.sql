@@ -4,4 +4,4 @@ ADD COLUMN address TEXT,
 ADD COLUMN description TEXT,
 ADD COLUMN image_urls TEXT[];
 
-CREATE INDEX IF NOT EXIST organizations_geom_idx ON organizations USING GIST (geom);
+CREATE INDEX IF NOT EXISTS organizations_geom_idx ON organizations USING GIST (geom);
