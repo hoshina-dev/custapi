@@ -5,6 +5,9 @@ A clean, layered REST API for managing users and organizations built with Go, Fi
 ## Architecture
 
 ```
+sql/
+ └── xxx_description.sql
+
 cmd/                    # Application entry point
   └── main.go          # Main application bootstrap
 
@@ -15,7 +18,7 @@ docs/                   # Swagger documentation
 
 internal/              # Private application code
   ├── config/         # Configuration management
-  ├── db/             # Database connection & migrations
+  ├── database/             # Database connection & migrations
   ├── handlers/       # HTTP handlers (transport layer)
   ├── middleware/     # Cross-cutting concerns (logging, etc.)
   ├── models/         # Domain models & DTOs
