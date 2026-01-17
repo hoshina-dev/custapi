@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
 	"github.com/hoshina-dev/custapi/internal/repositories"
 )
@@ -41,7 +42,8 @@ func (s *organizationService) CreateOrganization(ctx context.Context, req *model
 
 // GetOrganization retrieves an organization by ID
 func (s *organizationService) GetOrganization(ctx context.Context, id string) (*models.Organization, error) {
-	return s.orgRepo.FindByID(ctx, id)
+	parsedUUID, _ := uuid.Parse(id)
+	return s.orgRepo.FindByID(ctx, parsedUUID)
 }
 
 // ListOrganizations retrieves all organizations

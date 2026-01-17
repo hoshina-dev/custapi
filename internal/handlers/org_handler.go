@@ -36,7 +36,7 @@ func (h *OrgHandler) GetOrganizations(c *fiber.Ctx) error {
 	response := make([]models.OrganizationResponse, len(orgs))
 	for i, o := range orgs {
 		response[i] = models.OrganizationResponse{
-			ID:   o.ID,
+			ID:   o.ID.String(),
 			Name: o.Name,
 		}
 	}
@@ -68,7 +68,7 @@ func (h *OrgHandler) GetOrganization(c *fiber.Ctx) error {
 	}
 
 	response := models.OrganizationResponse{
-		ID:   org.ID,
+		ID:   org.ID.String(),
 		Name: org.Name,
 	}
 

@@ -8,10 +8,12 @@ import (
 	"gorm.io/gorm"
 )
 
+const orgCols = "id, name, ST_AsGeoJSON(geom) as geom, address, description, image_urls, created_at, updated_at"
+
 // OrganizationRepository defines organization persistence operations
 type OrganizationRepository interface {
 	Create(ctx context.Context, org *models.Organization) error
-	FindByID(ctx context.Context, id string) (*models.Organization, error)
+	FindByID(ctx context.Context, id uuid.UUID) (*models.Organization, error)
 	FindAll(ctx context.Context) ([]models.Organization, error)
 }
 
@@ -27,14 +29,13 @@ func NewOrganizationRepository(db *gorm.DB) OrganizationRepository {
 
 // Create creates a new organization
 func (r *organizationRepository) Create(ctx context.Context, org *models.Organization) error {
-	org.ID = uuid.New().String()
 	return r.db.WithContext(ctx).Create(org).Error
 }
 
 // FindByID finds an organization by ID
-func (r *organizationRepository) FindByID(ctx context.Context, id string) (*models.Organization, error) {
+func (r *organizationRepository) FindByID(ctx context.Context, id uuid.UUID) (*models.Organization, error) {
 	var org models.Organization
-	err := r.db.WithContext(ctx).First(&org, "id = ?", id).Error
+	err := r.db.WithContext(ctx).Select(orgCols).First(&org, id).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
@@ -47,6 +48,6 @@ func (r *organizationRepository) FindByID(ctx context.Context, id string) (*mode
 // FindAll retrieves all organizations
 func (r *organizationRepository) FindAll(ctx context.Context) ([]models.Organization, error) {
 	var orgs []models.Organization
-	err := r.db.WithContext(ctx).Order("created_at DESC").Find(&orgs).Error
+	err := r.db.WithContext(ctx).Select(orgCols).Order("created_at DESC").Find(&orgs).Error
 	return orgs, err
 }

@@ -1,9 +1,13 @@
 package models
 
 import (
+	"context"
 	"time"
 
+	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // User represents a user in the system
@@ -20,10 +24,35 @@ type User struct {
 
 // Organization represents an organization in the system
 type Organization struct {
-	ID        string         `gorm:"primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
-	Name      string         `gorm:"not null" json:"name"`
-	Users     []User         `gorm:"foreignKey:OrganizationID" json:"users,omitempty"`
-	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey;<-:false"`
+	Name        string
+	Geom        Point
+	Address     string
+	Description string
+	ImageUrls   pq.StringArray `gorm:"type:text[]"`
+	Users       []User
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   gorm.DeletedAt
+}
+
+type Point struct {
+	Latitude  float64
+	Longitude float64
+	Geom      string
+}
+
+func (p *Point) Scan(v interface{}) error {
+	if v != nil {
+		p.Geom = v.(string)
+	}
+	return nil
+}
+
+func (p Point) GormDataType() string {
+	return "geometry(Point,4326)"
+}
+
+func (p Point) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
+	return gorm.Expr("ST_Point(?, ?, 4326)", p.Latitude, p.Longitude)
 }
