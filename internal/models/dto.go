@@ -1,5 +1,12 @@
 package models
 
+import (
+	"encoding/json"
+	"time"
+
+	"github.com/google/uuid"
+)
+
 // UserResponse is the DTO for user responses
 type UserResponse struct {
 	ID             string `json:"id" example:"550e8400-e29b-41d4-a716-446655440000"`
@@ -17,13 +24,24 @@ type CreateUserRequest struct {
 
 // OrganizationResponse is the DTO for organization responses
 type OrganizationResponse struct {
-	ID   string `json:"id" example:"550e8400-e29b-41d4-a716-446655440001"`
-	Name string `json:"name" example:"Acme Corp"`
+	ID          uuid.UUID       `json:"id" example:"550e8400-e29b-41d4-a716-446655440001"`
+	Name        string          `json:"name" example:"Acme Corp"`
+	Geom        json.RawMessage `json:"geom"`
+	Address     *string         `json:"address,omitempty"`
+	Description *string         `json:"description,omitempty"`
+	ImageUrls   []string        `json:"image_urls,omitempty"`
+	CreatedAt   time.Time       `json:"created_at"`
+	UpdatedAt   time.Time       `json:"updated_at"`
 }
 
 // CreateOrganizationRequest is the DTO for organization creation
 type CreateOrganizationRequest struct {
-	Name string `json:"name" validate:"required" example:"Acme Corp"`
+	Name        string   `json:"name" validate:"required" example:"Acme Corp"`
+	Latitude    float64  `json:"lat" validate:"required,latitude" example:"13.7388"`
+	Longitude   float64  `json:"lng" validate:"required,longitude" example:"100.5322"`
+	Address     *string  `json:"address,omitempty" validate:"omitempty" example:"254 St, Bangkok, TH"`
+	Description *string  `json:"description,omitempty" validate:"omitempty" example:"Higher education institution"`
+	ImageUrls   []string `json:"image_urls,omitempty" validate:"omitempty" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
 }
 
 // ErrorResponse is the DTO for error responses

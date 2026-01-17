@@ -24,12 +24,12 @@ type User struct {
 
 // Organization represents an organization in the system
 type Organization struct {
-	ID          uuid.UUID `gorm:"type:uuid;primaryKey;<-:false"`
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	Name        string
 	Geom        Point
-	Address     string
-	Description string
-	ImageUrls   pq.StringArray `gorm:"type:text[]"`
+	Address     *string
+	Description *string
+	ImageUrls   pq.StringArray `gorm:"type:text[];default:'{}'"`
 	Users       []User
 	CreatedAt   time.Time
 	UpdatedAt   time.Time

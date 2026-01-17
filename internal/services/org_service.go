@@ -11,7 +11,7 @@ import (
 // OrganizationService defines organization business logic operations
 type OrganizationService interface {
 	CreateOrganization(ctx context.Context, req *models.CreateOrganizationRequest) (*models.Organization, error)
-	GetOrganization(ctx context.Context, id string) (*models.Organization, error)
+	GetOrganization(ctx context.Context, id uuid.UUID) (*models.Organization, error)
 	ListOrganizations(ctx context.Context) ([]models.Organization, error)
 }
 
@@ -29,21 +29,18 @@ func NewOrganizationService(orgRepo repositories.OrganizationRepository) Organiz
 
 // CreateOrganization creates a new organization
 func (s *organizationService) CreateOrganization(ctx context.Context, req *models.CreateOrganizationRequest) (*models.Organization, error) {
-	org := &models.Organization{
-		Name: req.Name,
-	}
+	org := req.ToDomain()
 
 	if err := s.orgRepo.Create(ctx, org); err != nil {
 		return nil, err
 	}
 
-	return org, nil
+	return s.orgRepo.FindByID(ctx, org.ID)
 }
 
 // GetOrganization retrieves an organization by ID
-func (s *organizationService) GetOrganization(ctx context.Context, id string) (*models.Organization, error) {
-	parsedUUID, _ := uuid.Parse(id)
-	return s.orgRepo.FindByID(ctx, parsedUUID)
+func (s *organizationService) GetOrganization(ctx context.Context, id uuid.UUID) (*models.Organization, error) {
+	return s.orgRepo.FindByID(ctx, id)
 }
 
 // ListOrganizations retrieves all organizations
