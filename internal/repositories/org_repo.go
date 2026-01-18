@@ -8,8 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const orgCols = "id, name, ST_AsGeoJSON(geom) as geom, address, description, image_urls, created_at, updated_at"
-
 // OrganizationRepository defines organization persistence operations
 type OrganizationRepository interface {
 	Create(ctx context.Context, org *models.Organization) error
@@ -36,7 +34,7 @@ func (r *organizationRepository) Create(ctx context.Context, org *models.Organiz
 // FindByID finds an organization by ID
 func (r *organizationRepository) FindByID(ctx context.Context, id uuid.UUID) (*models.Organization, error) {
 	var org models.Organization
-	err := r.db.WithContext(ctx).Select(orgCols).First(&org, id).Error
+	err := r.db.WithContext(ctx).First(&org, id).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
@@ -49,7 +47,7 @@ func (r *organizationRepository) FindByID(ctx context.Context, id uuid.UUID) (*m
 // FindAll retrieves all organizations
 func (r *organizationRepository) FindAll(ctx context.Context) ([]models.Organization, error) {
 	var orgs []models.Organization
-	err := r.db.WithContext(ctx).Select(orgCols).Order("created_at DESC").Find(&orgs).Error
+	err := r.db.WithContext(ctx).Order("created_at DESC").Find(&orgs).Error
 	return orgs, err
 }
 

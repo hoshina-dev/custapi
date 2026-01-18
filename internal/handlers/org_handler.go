@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"fmt"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -92,7 +90,6 @@ func (h *OrgHandler) GetOrganization(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: "organization not found"})
 	}
 
-	fmt.Println(org.ToResponse())
 	return c.JSON(org.ToResponse())
 }
 

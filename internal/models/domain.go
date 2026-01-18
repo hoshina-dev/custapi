@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -55,4 +56,21 @@ func (p Point) GormDataType() string {
 
 func (p Point) GormValue(ctx context.Context, db *gorm.DB) clause.Expr {
 	return gorm.Expr("ST_Point(?, ?, 4326)", p.Latitude, p.Longitude)
+}
+
+func (o *Organization) AfterSave(tx *gorm.DB) (err error) {
+	err = tx.First(o, o.ID).Error
+	return
+}
+
+func (o *Organization) AfterFind(tx *gorm.DB) (err error) {
+	if o.Geom.Geom != "" {
+		var tmp string
+		err = tx.Raw("SELECT ST_AsGeoJSON(?)", o.Geom.Geom).Row().Scan(&tmp)
+		if err == nil {
+			log.Println(tmp)
+			o.Geom.Geom = tmp
+		}
+	}
+	return
 }

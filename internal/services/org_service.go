@@ -36,7 +36,7 @@ func (s *organizationService) CreateOrganization(ctx context.Context, req *model
 		return nil, err
 	}
 
-	return s.orgRepo.FindByID(ctx, org.ID)
+	return org, nil
 }
 
 // GetOrganization retrieves an organization by ID
