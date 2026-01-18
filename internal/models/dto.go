@@ -26,12 +26,12 @@ type CreateUserRequest struct {
 type OrganizationResponse struct {
 	ID          uuid.UUID       `json:"id" example:"550e8400-e29b-41d4-a716-446655440001"`
 	Name        string          `json:"name" example:"Acme Corp"`
-	Geom        json.RawMessage `json:"geom"`
-	Address     *string         `json:"address,omitempty"`
-	Description *string         `json:"description,omitempty"`
-	ImageUrls   []string        `json:"image_urls,omitempty"`
-	CreatedAt   time.Time       `json:"created_at"`
-	UpdatedAt   time.Time       `json:"updated_at"`
+	Geom        json.RawMessage `json:"geom" example:"{\"type\": \"Point\", \"coordinates\": [0, 0]}"`
+	Address     *string         `json:"address,omitempty" example:"254 St, Bangkok, TH"`
+	Description *string         `json:"description,omitempty" example:"Higher education institution"`
+	ImageUrls   []string        `json:"image_urls" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
+	CreatedAt   time.Time       `json:"created_at" example:"2026-01-01T12:00:00.00000+07:00"`
+	UpdatedAt   time.Time       `json:"updated_at" example:"2026-01-01T12:00:00.00000+07:00"`
 }
 
 // CreateOrganizationRequest is the DTO for organization creation
@@ -41,7 +41,7 @@ type CreateOrganizationRequest struct {
 	Longitude   float64  `json:"lng" validate:"required,longitude" example:"100.5322"`
 	Address     *string  `json:"address,omitempty" validate:"omitempty" example:"254 St, Bangkok, TH"`
 	Description *string  `json:"description,omitempty" validate:"omitempty" example:"Higher education institution"`
-	ImageUrls   []string `json:"image_urls,omitempty" validate:"omitempty" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
+	ImageUrls   []string `json:"image_urls,omitempty" validate:"omitempty,dive,url" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
 }
 
 // ErrorResponse is the DTO for error responses
