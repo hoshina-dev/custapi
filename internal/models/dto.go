@@ -44,6 +44,15 @@ type CreateOrganizationRequest struct {
 	ImageUrls   []string `json:"image_urls,omitempty" validate:"omitempty,dive,url" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
 }
 
+type UpdateOrganizationRequest struct {
+	Name        *string  `json:"name" validate:"omitempty" example:"Acme Corp"`
+	Latitude    *float64 `json:"lat" validate:"omitempty,latitude" example:"13.7388"`
+	Longitude   *float64 `json:"lng" validate:"omitempty,longitude" example:"100.5322"`
+	Address     *string  `json:"address,omitempty" validate:"omitempty" example:"254 St, Bangkok, TH"`
+	Description *string  `json:"description,omitempty" validate:"omitempty" example:"Higher education institution"`
+	ImageUrls   []string `json:"image_urls,omitempty" validate:"omitempty,dive,url" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
+}
+
 // ErrorResponse is the DTO for error responses
 type ErrorResponse struct {
 	Error string `json:"error" example:"error message"`

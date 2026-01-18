@@ -31,6 +31,7 @@ func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *
 		org := v1.Group("/organizations")
 		org.Get("/", orgHandler.GetOrganizations)
 		org.Get(":id", orgHandler.GetOrganization)
-		org.Post("/", orgHandler.CreateOrg)
+		org.Post("/", orgHandler.CreateOrganization)
+		org.Patch("/:id", orgHandler.UpdateOrganization)
 	}
 }

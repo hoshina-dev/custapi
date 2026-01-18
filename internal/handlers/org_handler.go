@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"fmt"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -22,7 +24,7 @@ func NewOrgHandler(orgService services.OrganizationService) *OrgHandler {
 	}
 }
 
-func (h *OrgHandler) CreateOrg(c *fiber.Ctx) error {
+func (h *OrgHandler) CreateOrganization(c *fiber.Ctx) error {
 	req := new(models.CreateOrganizationRequest)
 
 	if err := c.BodyParser(req); err != nil {
@@ -76,13 +78,40 @@ func (h *OrgHandler) GetOrganizations(c *fiber.Ctx) error {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /organizations/{id} [get]
 func (h *OrgHandler) GetOrganization(c *fiber.Ctx) error {
-	id := c.Params("id")
-	parsedUUID, err := uuid.Parse(id)
+	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
 	}
 
-	org, err := h.orgService.GetOrganization(c.Context(), parsedUUID)
+	org, err := h.orgService.GetOrganization(c.Context(), id)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	if org == nil {
+		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: "organization not found"})
+	}
+
+	fmt.Println(org.ToResponse())
+	return c.JSON(org.ToResponse())
+}
+
+func (h *OrgHandler) UpdateOrganization(c *fiber.Ctx) error {
+	id, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
+	}
+
+	req := new(models.UpdateOrganizationRequest)
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid JSON payload"})
+	}
+
+	if err := h.validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	org, err := h.orgService.UpdateOrganization(c.Context(), id, req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}

@@ -15,6 +15,7 @@ type OrganizationRepository interface {
 	Create(ctx context.Context, org *models.Organization) error
 	FindByID(ctx context.Context, id uuid.UUID) (*models.Organization, error)
 	FindAll(ctx context.Context) ([]models.Organization, error)
+	Update(ctx context.Context, org *models.Organization) error
 }
 
 // organizationRepository is the concrete implementation of OrganizationRepository
@@ -50,4 +51,8 @@ func (r *organizationRepository) FindAll(ctx context.Context) ([]models.Organiza
 	var orgs []models.Organization
 	err := r.db.WithContext(ctx).Select(orgCols).Order("created_at DESC").Find(&orgs).Error
 	return orgs, err
+}
+
+func (r *organizationRepository) Update(ctx context.Context, org *models.Organization) error {
+	return r.db.WithContext(ctx).Model(org).Updates(org).Error
 }
