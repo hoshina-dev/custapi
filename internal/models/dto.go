@@ -37,8 +37,8 @@ type OrganizationResponse struct {
 // CreateOrganizationRequest is the DTO for organization creation
 type CreateOrganizationRequest struct {
 	Name        string   `json:"name" validate:"required" example:"Acme Corp"`
-	Latitude    float64  `json:"lat" validate:"required,latitude" example:"13.7388"`
-	Longitude   float64  `json:"lng" validate:"required,longitude" example:"100.5322"`
+	Latitude    *float64 `json:"lat" validate:"required,latitude" example:"13.7388"`
+	Longitude   *float64 `json:"lng" validate:"required,longitude" example:"100.5322"`
 	Address     *string  `json:"address,omitempty" validate:"omitempty" example:"254 St, Bangkok, TH"`
 	Description *string  `json:"description,omitempty" validate:"omitempty" example:"Higher education institution"`
 	ImageUrls   []string `json:"image_urls,omitempty" validate:"omitempty,dive,url" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`

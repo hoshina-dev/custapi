@@ -55,22 +55,7 @@ func (s *organizationService) UpdateOrganization(ctx context.Context, id uuid.UU
 		return nil, err
 	}
 
-	if req.Name != nil {
-		org.Name = *req.Name
-	}
-	if req.Latitude != nil && req.Longitude != nil {
-		org.Geom.Latitude = *req.Latitude
-		org.Geom.Longitude = *req.Longitude
-	}
-	if req.Address != nil {
-		org.Address = req.Address
-	}
-	if req.Description != nil {
-		org.Description = req.Description
-	}
-	if req.ImageUrls != nil {
-		org.ImageUrls = req.ImageUrls
-	}
+	updatedOrg := req.ToDomain(org.ID)
 
-	return org, s.orgRepo.Update(ctx, org)
+	return updatedOrg, s.orgRepo.Update(ctx, updatedOrg)
 }

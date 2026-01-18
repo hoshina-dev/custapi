@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -38,8 +37,8 @@ type Organization struct {
 }
 
 type Point struct {
-	Latitude  float64
-	Longitude float64
+	Latitude  *float64
+	Longitude *float64
 	Geom      string
 }
 
@@ -68,7 +67,6 @@ func (o *Organization) AfterFind(tx *gorm.DB) (err error) {
 		var tmp string
 		err = tx.Raw("SELECT ST_AsGeoJSON(?)", o.Geom.Geom).Row().Scan(&tmp)
 		if err == nil {
-			log.Println(tmp)
 			o.Geom.Geom = tmp
 		}
 	}
