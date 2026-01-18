@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
@@ -14,6 +15,7 @@ type OrganizationRepository interface {
 	FindByID(ctx context.Context, id uuid.UUID) (*models.Organization, error)
 	FindAll(ctx context.Context) ([]models.Organization, error)
 	Update(ctx context.Context, org *models.Organization) error
+	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 // organizationRepository is the concrete implementation of OrganizationRepository
@@ -53,4 +55,15 @@ func (r *organizationRepository) FindAll(ctx context.Context) ([]models.Organiza
 
 func (r *organizationRepository) Update(ctx context.Context, org *models.Organization) error {
 	return r.db.WithContext(ctx).Model(org).Updates(org).Error
+}
+
+func (r *organizationRepository) Delete(ctx context.Context, id uuid.UUID) error {
+	res := r.db.WithContext(ctx).Delete(&models.Organization{}, id)
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected == 0 {
+		return errors.New("organization not found")
+	}
+	return nil
 }

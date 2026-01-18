@@ -119,3 +119,19 @@ func (h *OrgHandler) UpdateOrganization(c *fiber.Ctx) error {
 
 	return c.JSON(org.ToResponse())
 }
+
+func (h *OrgHandler) DeleteOrganization(c *fiber.Ctx) error {
+	id, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
+	}
+
+	if err := h.orgService.DeleteOrganization(c.Context(), id); err != nil {
+		if err.Error() == "organization not found" {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}
