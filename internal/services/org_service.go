@@ -13,6 +13,7 @@ type OrganizationService interface {
 	CreateOrganization(ctx context.Context, req *models.CreateOrganizationRequest) (*models.Organization, error)
 	GetOrganization(ctx context.Context, id uuid.UUID) (*models.Organization, error)
 	ListOrganizations(ctx context.Context) ([]models.Organization, error)
+	GetAllCoords(ctx context.Context) ([]models.Organization, error)
 	UpdateOrganization(ctx context.Context, id uuid.UUID, req *models.UpdateOrganizationRequest) (*models.Organization, error)
 	DeleteOrganization(ctx context.Context, id uuid.UUID) error
 }
@@ -48,6 +49,10 @@ func (s *organizationService) GetOrganization(ctx context.Context, id uuid.UUID)
 // ListOrganizations retrieves all organizations
 func (s *organizationService) ListOrganizations(ctx context.Context) ([]models.Organization, error) {
 	return s.orgRepo.FindAll(ctx)
+}
+
+func (s *organizationService) GetAllCoords(ctx context.Context) ([]models.Organization, error) {
+	return s.orgRepo.FindAllCoords(ctx)
 }
 
 func (s *organizationService) UpdateOrganization(ctx context.Context, id uuid.UUID, req *models.UpdateOrganizationRequest) (*models.Organization, error) {

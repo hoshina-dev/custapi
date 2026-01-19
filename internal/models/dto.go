@@ -53,6 +53,12 @@ type UpdateOrganizationRequest struct {
 	ImageUrls   []string `json:"image_urls,omitempty" validate:"omitempty,dive,url" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
 }
 
+type OrganizationCoord struct {
+	ID        uuid.UUID `json:"id" example:"550e8400-e29b-41d4-a716-446655440001"`
+	Latitude  float64   `json:"lat" example:"13.7388"`
+	Longitude float64   `json:"lng" example:"100.5322"`
+}
+
 // ErrorResponse is the DTO for error responses
 type ErrorResponse struct {
 	Error string `json:"error" example:"error message"`

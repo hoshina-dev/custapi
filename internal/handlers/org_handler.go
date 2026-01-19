@@ -93,6 +93,20 @@ func (h *OrgHandler) GetOrganization(c *fiber.Ctx) error {
 	return c.JSON(org.ToResponse())
 }
 
+func (h *OrgHandler) GetAllCoords(c *fiber.Ctx) error {
+	orgs, err := h.orgService.GetAllCoords(c.Context())
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	coords := make([]models.OrganizationCoord, len(orgs))
+	for i, org := range orgs {
+		coords[i] = models.OrganizationCoord{ID: org.ID, Latitude: *org.Latitude, Longitude: *org.Longitude}
+	}
+
+	return c.JSON(coords)
+}
+
 func (h *OrgHandler) UpdateOrganization(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {

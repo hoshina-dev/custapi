@@ -15,6 +15,7 @@ type OrganizationRepository interface {
 	Create(ctx context.Context, org *models.Organization) error
 	FindByID(ctx context.Context, id uuid.UUID) (*models.Organization, error)
 	FindAll(ctx context.Context) ([]models.Organization, error)
+	FindAllCoords(ctx context.Context) ([]models.Organization, error)
 	Update(ctx context.Context, org *models.Organization) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }
@@ -51,6 +52,12 @@ func (r *organizationRepository) FindByID(ctx context.Context, id uuid.UUID) (*m
 func (r *organizationRepository) FindAll(ctx context.Context) ([]models.Organization, error) {
 	var orgs []models.Organization
 	err := r.db.WithContext(ctx).Order("created_at DESC").Find(&orgs).Error
+	return orgs, err
+}
+
+func (r *organizationRepository) FindAllCoords(ctx context.Context) ([]models.Organization, error) {
+	var orgs []models.Organization
+	err := r.db.WithContext(ctx).Select("id, latitude, longitude").Find(&orgs).Error
 	return orgs, err
 }
 
