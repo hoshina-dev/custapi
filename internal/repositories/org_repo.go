@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // OrganizationRepository defines organization persistence operations
@@ -54,7 +55,7 @@ func (r *organizationRepository) FindAll(ctx context.Context) ([]models.Organiza
 }
 
 func (r *organizationRepository) Update(ctx context.Context, org *models.Organization) error {
-	return r.db.WithContext(ctx).Model(org).Updates(org).Error
+	return r.db.WithContext(ctx).Model(org).Clauses(clause.Returning{}).Updates(org).Error
 }
 
 func (r *organizationRepository) Delete(ctx context.Context, id uuid.UUID) error {
