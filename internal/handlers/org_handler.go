@@ -22,6 +22,18 @@ func NewOrgHandler(orgService services.OrganizationService) *OrgHandler {
 	}
 }
 
+// CreateOrganization godoc
+// @Summary Create a new organization
+// @Description Create a new organization with name, location, and optional details
+// @Tags organizations
+// @Accept json
+// @Produce json
+// @Param organization body dto.CreateOrganizationRequest true "Organization to create"
+// @Success 201 {object} models.OrganizationResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 422 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /organizations [post]
 func (h *OrgHandler) CreateOrganization(c *fiber.Ctx) error {
 	req := new(models.CreateOrganizationRequest)
 
