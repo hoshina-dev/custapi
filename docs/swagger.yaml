@@ -6,13 +6,50 @@ definitions:
         example: error message
         type: string
     type: object
+  github_com_hoshina-dev_custapi_internal_models.GetOrganizationsByIDsRequest:
+    properties:
+      ids:
+        example:
+        - 550e8400-e29b-41d4-a716-446655440000
+        - 550e8400-e29b-41d4-a716-446655440001
+        items:
+          type: string
+        type: array
+    required:
+    - ids
+    type: object
   github_com_hoshina-dev_custapi_internal_models.OrganizationResponse:
     properties:
+      address:
+        example: 254 St, Bangkok, TH
+        type: string
+      created_at:
+        example: "2026-01-01T12:00:00.00000+07:00"
+        type: string
+      description:
+        example: Higher education institution
+        type: string
       id:
         example: 550e8400-e29b-41d4-a716-446655440001
         type: string
+      image_urls:
+        example:
+        - https://example.com/example-1.jpg
+        - https://example.com/example-2.jpg
+        items:
+          type: string
+        type: array
+      lat:
+        example: 13.7888
+        type: number
+      lng:
+        example: 100.5322
+        type: number
       name:
         example: Acme Corp
+        type: string
+      updated_at:
+        example: "2026-01-01T12:00:00.00000+07:00"
         type: string
     type: object
   github_com_hoshina-dev_custapi_internal_models.UserResponse:
@@ -85,6 +122,42 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
       summary: Get an organization by ID
+      tags:
+      - organizations
+  /organizations/batch:
+    post:
+      consumes:
+      - application/json
+      description: Get multiple organizations by their UUIDs in a single request
+      parameters:
+      - description: List of organization IDs
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.GetOrganizationsByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.OrganizationResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Get organizations by multiple IDs (batch)
       tags:
       - organizations
   /users:

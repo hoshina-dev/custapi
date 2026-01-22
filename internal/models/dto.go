@@ -60,7 +60,7 @@ type OrganizationCoord struct {
 }
 
 type GetOrganizationsByIDsRequest struct {
-	IDs []uuid.UUID `json:"ids" validate:"required"`
+	IDs []uuid.UUID `json:"ids" validate:"required" example:"550e8400-e29b-41d4-a716-446655440000,550e8400-e29b-41d4-a716-446655440001"`
 }
 
 // ErrorResponse is the DTO for error responses
