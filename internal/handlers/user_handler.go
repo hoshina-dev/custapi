@@ -19,14 +19,15 @@ func NewUserHandler(userService services.UserService) *UserHandler {
 }
 
 // GetUsers godoc
-// @Summary Get all users
-// @Description Get a list of all users
-// @Tags users
-// @Accept json
-// @Produce json
-// @Success 200 {array} models.UserResponse
-// @Failure 500 {object} models.ErrorResponse
-// @Router /users [get]
+//
+//	@Summary		Get all users
+//	@Description	Get a list of all users
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		models.UserResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/users [get]
 func (h *UserHandler) GetUsers(c *fiber.Ctx) error {
 	users, err := h.userService.ListUsers(c.Context())
 	if err != nil {
@@ -47,16 +48,17 @@ func (h *UserHandler) GetUsers(c *fiber.Ctx) error {
 }
 
 // GetUser godoc
-// @Summary Get a user by ID
-// @Description Get a single user by their ID
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param id path string true "User ID"
-// @Success 200 {object} models.UserResponse
-// @Failure 404 {object} models.ErrorResponse
-// @Failure 500 {object} models.ErrorResponse
-// @Router /users/{id} [get]
+//
+//	@Summary		Get a user by ID
+//	@Description	Get a single user by their ID
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"User ID"
+//	@Success		200	{object}	models.UserResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/users/{id} [get]
 func (h *UserHandler) GetUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -80,16 +82,17 @@ func (h *UserHandler) GetUser(c *fiber.Ctx) error {
 }
 
 // GetUsersByOrganization godoc
-// @Summary Get users by organization
-// @Description Get all users in a specific organization
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param org_id path string true "Organization ID"
-// @Success 200 {array} models.UserResponse
-// @Failure 404 {object} models.ErrorResponse
-// @Failure 500 {object} models.ErrorResponse
-// @Router /users/organization/{org_id} [get]
+//
+//	@Summary		Get users by organization
+//	@Description	Get all users in a specific organization
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			org_id	path		string	true	"Organization ID"
+//	@Success		200		{array}		models.UserResponse
+//	@Failure		404		{object}	models.ErrorResponse
+//	@Failure		500		{object}	models.ErrorResponse
+//	@Router			/users/organization/{org_id} [get]
 func (h *UserHandler) GetUsersByOrganization(c *fiber.Ctx) error {
 	orgID := c.Params("org_id")
 

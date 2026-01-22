@@ -39,6 +39,56 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Create a new organization with name, location, and optional details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organizations"
+                ],
+                "summary": "Create a new organization",
+                "parameters": [
+                    {
+                        "description": "Organization to create",
+                        "name": "organization",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.CreateOrganizationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.OrganizationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/organizations/batch": {
@@ -96,6 +146,38 @@
                 }
             }
         },
+        "/organizations/coordinates": {
+            "get": {
+                "description": "Get ID and coordinates of all organizations",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organizations"
+                ],
+                "summary": "Get all organization coordinates",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.OrganizationCoord"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/organizations/{id}": {
             "get": {
                 "description": "Get a single organization by their ID",
@@ -127,6 +209,114 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Soft delete an organization by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organizations"
+                ],
+                "summary": "Delete an organization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Organization ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update an existing organization by ID (partial updates supported)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organizations"
+                ],
+                "summary": "Update an organization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Organization ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Fields to update",
+                        "name": "organization",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.UpdateOrganizationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.OrganizationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
                         }
@@ -265,6 +455,46 @@
         }
     },
     "definitions": {
+        "github_com_hoshina-dev_custapi_internal_models.CreateOrganizationRequest": {
+            "type": "object",
+            "required": [
+                "lat",
+                "lng",
+                "name"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "254 St, Bangkok, TH"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Higher education institution"
+                },
+                "image_urls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "https://example.com/example-1.jpg",
+                        "https://example.com/example-2.jpg"
+                    ]
+                },
+                "lat": {
+                    "type": "number",
+                    "example": 13.7388
+                },
+                "lng": {
+                    "type": "number",
+                    "example": 100.5322
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Acme Corp"
+                }
+            }
+        },
         "github_com_hoshina-dev_custapi_internal_models.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -289,6 +519,23 @@
                         "550e8400-e29b-41d4-a716-446655440000",
                         "550e8400-e29b-41d4-a716-446655440001"
                     ]
+                }
+            }
+        },
+        "github_com_hoshina-dev_custapi_internal_models.OrganizationCoord": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "lat": {
+                    "type": "number",
+                    "example": 13.7388
+                },
+                "lng": {
+                    "type": "number",
+                    "example": 100.5322
                 }
             }
         },
@@ -336,6 +583,41 @@
                 "updated_at": {
                     "type": "string",
                     "example": "2026-01-01T12:00:00.00000+07:00"
+                }
+            }
+        },
+        "github_com_hoshina-dev_custapi_internal_models.UpdateOrganizationRequest": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "254 St, Bangkok, TH"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Higher education institution"
+                },
+                "image_urls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "https://example.com/example-1.jpg",
+                        "https://example.com/example-2.jpg"
+                    ]
+                },
+                "lat": {
+                    "type": "number",
+                    "example": 13.7388
+                },
+                "lng": {
+                    "type": "number",
+                    "example": 100.5322
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Acme Corp"
                 }
             }
         },

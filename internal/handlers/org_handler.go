@@ -22,6 +22,19 @@ func NewOrgHandler(orgService services.OrganizationService) *OrgHandler {
 	}
 }
 
+// CreateOrganization godoc
+//
+//	@Summary		Create a new organization
+//	@Description	Create a new organization with name, location, and optional details
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Param			organization	body		models.CreateOrganizationRequest	true	"Organization to create"
+//	@Success		201				{object}	models.OrganizationResponse
+//	@Failure		400				{object}	models.ErrorResponse
+//	@Failure		422				{object}	models.ErrorResponse
+//	@Failure		500				{object}	models.ErrorResponse
+//	@Router			/organizations [post]
 func (h *OrgHandler) CreateOrganization(c *fiber.Ctx) error {
 	req := new(models.CreateOrganizationRequest)
 
@@ -42,14 +55,15 @@ func (h *OrgHandler) CreateOrganization(c *fiber.Ctx) error {
 }
 
 // GetOrganizations godoc
-// @Summary Get all organizations
-// @Description Get a list of all organizations
-// @Tags organizations
-// @Accept json
-// @Produce json
-// @Success 200 {array} models.OrganizationResponse
-// @Failure 500 {object} models.ErrorResponse
-// @Router /organizations [get]
+//
+//	@Summary		Get all organizations
+//	@Description	Get a list of all organizations
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		models.OrganizationResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/organizations [get]
 func (h *OrgHandler) GetOrganizations(c *fiber.Ctx) error {
 	orgs, err := h.orgService.ListOrganizations(c.Context())
 	if err != nil {
@@ -65,16 +79,17 @@ func (h *OrgHandler) GetOrganizations(c *fiber.Ctx) error {
 }
 
 // GetOrganization godoc
-// @Summary Get an organization by ID
-// @Description Get a single organization by their ID
-// @Tags organizations
-// @Accept json
-// @Produce json
-// @Param id path string true "Organization ID"
-// @Success 200 {object} models.OrganizationResponse
-// @Failure 404 {object} models.ErrorResponse
-// @Failure 500 {object} models.ErrorResponse
-// @Router /organizations/{id} [get]
+//
+//	@Summary		Get an organization by ID
+//	@Description	Get a single organization by their ID
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Organization ID"
+//	@Success		200	{object}	models.OrganizationResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/organizations/{id} [get]
 func (h *OrgHandler) GetOrganization(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
@@ -93,6 +108,16 @@ func (h *OrgHandler) GetOrganization(c *fiber.Ctx) error {
 	return c.JSON(org.ToResponse())
 }
 
+// GetAllCoords godoc
+//
+//	@Summary		Get all organization coordinates
+//	@Description	Get ID and coordinates of all organizations
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		models.OrganizationCoord
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/organizations/coordinates [get]
 func (h *OrgHandler) GetAllCoords(c *fiber.Ctx) error {
 	orgs, err := h.orgService.GetAllCoords(c.Context())
 	if err != nil {
@@ -107,6 +132,21 @@ func (h *OrgHandler) GetAllCoords(c *fiber.Ctx) error {
 	return c.JSON(coords)
 }
 
+// UpdateOrganization godoc
+//
+//	@Summary		Update an organization
+//	@Description	Update an existing organization by ID (partial updates supported)
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Param			id				path		string								true	"Organization ID (UUID)"
+//	@Param			organization	body		models.UpdateOrganizationRequest	true	"Fields to update"
+//	@Success		200				{object}	models.OrganizationResponse
+//	@Failure		400				{object}	models.ErrorResponse
+//	@Failure		404				{object}	models.ErrorResponse
+//	@Failure		422				{object}	models.ErrorResponse
+//	@Failure		500				{object}	models.ErrorResponse
+//	@Router			/organizations/{id} [patch]
 func (h *OrgHandler) UpdateOrganization(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
@@ -134,6 +174,19 @@ func (h *OrgHandler) UpdateOrganization(c *fiber.Ctx) error {
 	return c.JSON(org.ToResponse())
 }
 
+// DeleteOrganization godoc
+//
+//	@Summary		Delete an organization
+//	@Description	Soft delete an organization by ID
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"Organization ID (UUID)"
+//	@Success		204
+//	@Failure		400	{object}	models.ErrorResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/organizations/{id} [delete]
 func (h *OrgHandler) DeleteOrganization(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
