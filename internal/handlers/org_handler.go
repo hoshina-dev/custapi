@@ -105,6 +105,15 @@ func (h *OrgHandler) GetOrganization(c *fiber.Ctx) error {
 	return c.JSON(org.ToResponse())
 }
 
+// GetAllCoords godoc
+// @Summary Get all organization coordinates
+// @Description Get ID and coordinates of all organizations
+// @Tags organizations
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.OrganizationCoord
+// @Failure 500 {object} models.ErrorResponse
+// @Router /organizations/coordinates [get]
 func (h *OrgHandler) GetAllCoords(c *fiber.Ctx) error {
 	orgs, err := h.orgService.GetAllCoords(c.Context())
 	if err != nil {
