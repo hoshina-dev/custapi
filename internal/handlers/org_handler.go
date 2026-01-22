@@ -138,6 +138,7 @@ func (h *OrgHandler) GetAllCoords(c *fiber.Ctx) error {
 // @Param organization body models.UpdateOrganizationRequest true "Fields to update"
 // @Success 200 {object} models.OrganizationResponse
 // @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
 // @Failure 422 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /organizations/{id} [patch]
@@ -168,6 +169,18 @@ func (h *OrgHandler) UpdateOrganization(c *fiber.Ctx) error {
 	return c.JSON(org.ToResponse())
 }
 
+// DeleteOrganization godoc
+// @Summary Delete an organization
+// @Description Soft delete an organization by ID
+// @Tags organizations
+// @Accept json
+// @Produce json
+// @Param id path string true "Organization ID (UUID)"
+// @Success 204
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /organizations/{id} [delete]
 func (h *OrgHandler) DeleteOrganization(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
