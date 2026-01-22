@@ -202,3 +202,39 @@ func (h *OrgHandler) DeleteOrganization(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
+
+// GetByIDs godoc
+//
+//	@Summary		Get organizations by multiple IDs (batch)
+//	@Description	Get multiple organizations by their UUIDs in a single request
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		models.GetOrganizationsByIDsRequest	true	"List of organization IDs"
+//	@Success		200		{array}		models.OrganizationResponse
+//	@Failure		400		{object}	models.ErrorResponse
+//	@Failure		422		{object}	models.ErrorResponse
+//	@Failure		500		{object}	models.ErrorResponse
+//	@Router			/organizations/batch [post]
+func (h *OrgHandler) GetByIDs(c *fiber.Ctx) error {
+	req := new(models.GetOrganizationsByIDsRequest)
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid request body"})
+	}
+
+	if err := h.validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	orgs, err := h.orgService.GetByIDs(c.Context(), req.IDs)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	res := make([]models.OrganizationResponse, len(orgs))
+	for i, org := range orgs {
+		res[i] = org.ToResponse()
+	}
+
+	return c.JSON(res)
+}
