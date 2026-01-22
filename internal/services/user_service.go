@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
 	"github.com/hoshina-dev/custapi/internal/repositories"
 )
@@ -33,7 +34,8 @@ func NewUserService(userRepo repositories.UserRepository, orgRepo repositories.O
 // CreateUser creates a new user
 func (s *userService) CreateUser(ctx context.Context, req *models.CreateUserRequest) (*models.User, error) {
 	// Verify organization exists
-	org, err := s.orgRepo.FindByID(ctx, req.OrganizationID)
+	parsedUUID, _ := uuid.Parse(req.OrganizationID)
+	org, err := s.orgRepo.FindByID(ctx, parsedUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +69,8 @@ func (s *userService) ListUsers(ctx context.Context) ([]models.User, error) {
 // ListUsersByOrganization retrieves users by organization
 func (s *userService) ListUsersByOrganization(ctx context.Context, orgID string) ([]models.User, error) {
 	// Verify organization exists
-	org, err := s.orgRepo.FindByID(ctx, orgID)
+	parsedUUID, _ := uuid.Parse(orgID)
+	org, err := s.orgRepo.FindByID(ctx, parsedUUID)
 	if err != nil {
 		return nil, err
 	}

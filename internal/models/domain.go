@@ -3,6 +3,8 @@ package models
 import (
 	"time"
 
+	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -20,10 +22,15 @@ type User struct {
 
 // Organization represents an organization in the system
 type Organization struct {
-	ID        string         `gorm:"primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
-	Name      string         `gorm:"not null" json:"name"`
-	Users     []User         `gorm:"foreignKey:OrganizationID" json:"users,omitempty"`
-	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	Name        string
+	Latitude    *float64
+	Longitude   *float64
+	Address     *string
+	Description *string
+	ImageUrls   pq.StringArray `gorm:"type:text[];default:'{}'"`
+	Users       []User
+	CreatedAt   time.Time `gorm:"autoCreateTime"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime"`
+	DeletedAt   gorm.DeletedAt
 }
