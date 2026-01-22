@@ -59,6 +59,10 @@ type OrganizationCoord struct {
 	Longitude float64   `json:"lng" example:"100.5322"`
 }
 
+type GetOrganizationsByIDsRequest struct {
+	IDs []uuid.UUID `json:"ids" validate:"required"`
+}
+
 // ErrorResponse is the DTO for error responses
 type ErrorResponse struct {
 	Error string `json:"error" example:"error message"`

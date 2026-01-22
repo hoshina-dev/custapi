@@ -149,3 +149,26 @@ func (h *OrgHandler) DeleteOrganization(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
+
+func (h *OrgHandler) GetByIDs(c *fiber.Ctx) error {
+	req := new(models.GetOrganizationsByIDsRequest)
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid request body"})
+	}
+
+	if err := h.validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	orgs, err := h.orgService.GetByIDs(c.Context(), req.IDs)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	res := make([]models.OrganizationResponse, len(orgs))
+	for i, org := range orgs {
+		res[i] = org.ToResponse()
+	}
+
+	return c.JSON(res)
+}

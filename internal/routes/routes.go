@@ -33,6 +33,7 @@ func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *
 		org.Get("/coordinates", orgHandler.GetAllCoords)
 		org.Get("/:id", orgHandler.GetOrganization)
 		org.Post("/", orgHandler.CreateOrganization)
+		org.Post("/batch", orgHandler.GetByIDs)
 		org.Patch("/:id", orgHandler.UpdateOrganization)
 		org.Delete("/:id", orgHandler.DeleteOrganization)
 	}
