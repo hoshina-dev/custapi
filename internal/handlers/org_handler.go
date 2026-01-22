@@ -28,7 +28,7 @@ func NewOrgHandler(orgService services.OrganizationService) *OrgHandler {
 // @Tags organizations
 // @Accept json
 // @Produce json
-// @Param organization body dto.CreateOrganizationRequest true "Organization to create"
+// @Param organization body models.CreateOrganizationRequest true "Organization to create"
 // @Success 201 {object} models.OrganizationResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 422 {object} models.ErrorResponse
@@ -128,6 +128,19 @@ func (h *OrgHandler) GetAllCoords(c *fiber.Ctx) error {
 	return c.JSON(coords)
 }
 
+// UpdateOrganization godoc
+// @Summary Update an organization
+// @Description Update an existing organization by ID (partial updates supported)
+// @Tags organizations
+// @Accept json
+// @Produce json
+// @Param id path string true "Organization ID (UUID)"
+// @Param organization body models.UpdateOrganizationRequest true "Fields to update"
+// @Success 200 {object} models.OrganizationResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 422 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /organizations/{id} [patch]
 func (h *OrgHandler) UpdateOrganization(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
