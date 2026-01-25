@@ -22,6 +22,20 @@ func NewUserHandler(userService services.UserService) *UserHandler {
 	}
 }
 
+// CreateUser godoc
+//
+//	@Summary		Create a new user
+//	@Description	Create a new user with email, name, organization, and optional details
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		models.CreateUserRequest	true	"User to create"
+//	@Success		201		{object}	models.UserResponse
+//	@Failure		400		{object}	models.ErrorResponse
+//	@Failure		404		{object}	models.ErrorResponse
+//	@Failure		422		{object}	models.ErrorResponse
+//	@Failure		500		{object}	models.ErrorResponse
+//	@Router			/users [post]
 func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 	req := new(models.CreateUserRequest)
 
@@ -134,6 +148,21 @@ func (h *UserHandler) GetUsersByOrganization(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
+// UpdateUser godoc
+//
+//	@Summary		Update a user
+//	@Description	Update an existing user by ID (partial updates supported)
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string						true	"User ID (UUID)"
+//	@Param			user	body		models.UpdateUserRequest	true	"Fields to update"
+//	@Success		200		{object}	models.UserResponse
+//	@Failure		400		{object}	models.ErrorResponse
+//	@Failure		404		{object}	models.ErrorResponse
+//	@Failure		422		{object}	models.ErrorResponse
+//	@Failure		500		{object}	models.ErrorResponse
+//	@Router			/users/{id} [patch]
 func (h *UserHandler) UpdateUser(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
@@ -161,6 +190,19 @@ func (h *UserHandler) UpdateUser(c *fiber.Ctx) error {
 	return c.JSON(user.ToResponse())
 }
 
+// DeleteUser godoc
+//
+//	@Summary		Delete a user
+//	@Description	Soft delete a user by ID
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"User ID (UUID)"
+//	@Success		204
+//	@Failure		400	{object}	models.ErrorResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/users/{id} [delete]
 func (h *UserHandler) DeleteUser(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
