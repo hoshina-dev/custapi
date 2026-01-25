@@ -8,17 +8,45 @@ import (
 
 // UserResponse is the DTO for user responses
 type UserResponse struct {
-	ID             uuid.UUID `json:"id" example:"550e8400-e29b-41d4-a716-446655440000"`
-	Email          string    `json:"email" example:"user@example.com"`
-	Name           string    `json:"name" example:"John Doe"`
-	OrganizationID uuid.UUID `json:"organization_id" example:"550e8400-e29b-41d4-a716-446655440001"`
+	ID                 uuid.UUID `json:"id" example:"550e8400-e29b-41d4-a716-446655440000"`
+	Email              string    `json:"email" example:"user@example.com"`
+	Name               string    `json:"name" example:"John Doe"`
+	OrganizationID     uuid.UUID `json:"organization_id" example:"550e8400-e29b-41d4-a716-446655440001"`
+	IsAdmin            bool      `json:"is_admin" example:"true"`
+	PhoneNumber        *string   `json:"phone_number" example:"+1234567890"`
+	SocialMedia        *string   `json:"social_media" example:"@john on Twitter, linkedin.com/in/john"`
+	Description        *string   `json:"description" example:"Senior researcher specializing in quantum computing"`
+	AvatarURL          *string   `json:"avatar_url" example:"https://example.com/avatar.jpg"`
+	ResearchCategories []string  `json:"research_categories" example:"QuantumComputing,Qiskit,Cryogenics"`
+	CreatedAt          time.Time `json:"created_at" example:"2026-01-01T12:00:00.00000+07:00"`
+	UpdatedAt          time.Time `json:"updated_at" example:"2026-01-01T12:00:00.00000+07:00"`
 }
 
 // CreateUserRequest is the DTO for user creation
 type CreateUserRequest struct {
-	Email          string `json:"email" validate:"required,email" example:"user@example.com"`
-	Name           string `json:"name" validate:"required" example:"John Doe"`
-	OrganizationID string `json:"organization_id" validate:"required,uuid" example:"550e8400-e29b-41d4-a716-446655440001"`
+	Email              string    `json:"email" validate:"required,email" example:"user@example.com"`
+	Name               string    `json:"name" validate:"required,max=255" example:"John Doe"`
+	OrganizationID     uuid.UUID `json:"organization_id" validate:"required,uuid" example:"550e8400-e29b-41d4-a716-446655440001"`
+	Password           string    `json:"password" validate:"required" example:"PassWord123!"`
+	PhoneNumber        *string   `json:"phone_number" validate:"omitempty,e164" example:"+1234567890"`
+	SocialMedia        *string   `json:"social_media" example:"@john on Twitter, linkedin.com/in/john"`
+	Description        *string   `json:"description" example:"Senior researcher specializing in quantum computing"`
+	AvatarURL          *string   `json:"avatar_url" validate:"omitempty,url" example:"https://example.com/avatar.jpg"`
+	ResearchCategories []string  `json:"research_categories" example:"QuantumComputing,Qiskit,Cryogenics"`
+	IsAdmin            *bool     `json:"is_admin" example:"true"`
+}
+
+type UpdateUserRequest struct {
+	Email              *string    `json:"email" validate:"omitempty,email" example:"user@example.com"`
+	Name               *string    `json:"name" validate:"omitempty,max=255" example:"John Doe"`
+	OrganizationID     *uuid.UUID `json:"organization_id" validate:"omitempty,uuid" example:"550e8400-e29b-41d4-a716-446655440001"`
+	Password           *string    `json:"password" example:"PassWord123!"`
+	PhoneNumber        *string    `json:"phone_number" validate:"omitempty,e164" example:"+1234567890"`
+	SocialMedia        *string    `json:"social_media" example:"@john on Twitter, linkedin.com/in/john"`
+	Description        *string    `json:"description" example:"Senior researcher specializing in quantum computing"`
+	AvatarURL          *string    `json:"avatar_url" validate:"omitempty,url" example:"https://example.com/avatar.jpg"`
+	ResearchCategories []string   `json:"research_categories" example:"QuantumComputing,Qiskit,Cryogenics"`
+	IsAdmin            *bool      `json:"is_admin" example:"true"`
 }
 
 // OrganizationResponse is the DTO for organization responses
