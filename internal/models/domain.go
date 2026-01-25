@@ -21,9 +21,9 @@ type User struct {
 	SocialMedia        *string
 	Description        *string
 	AvatarURL          *string
-	ResearchCategories pq.StringArray
-	CreatedAt          time.Time `gorm:"autoCreateTime"`
-	UpdatedAt          time.Time `gorm:"autoUpdateTime"`
+	ResearchCategories pq.StringArray `gorm:"type:text[];default:'{}'"`
+	CreatedAt          time.Time      `gorm:"autoCreateTime"`
+	UpdatedAt          time.Time      `gorm:"autoUpdateTime"`
 	DeletedAt          gorm.DeletedAt
 }
 
