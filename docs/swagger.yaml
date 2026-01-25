@@ -133,7 +133,6 @@ definitions:
         example: 550e8400-e29b-41d4-a716-446655440001
         type: string
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: A simple REST API for managing users and organizations
