@@ -46,7 +46,7 @@ func (s *userService) CreateUser(ctx context.Context, req *models.CreateUserRequ
 	user := &models.User{
 		Email:          req.Email,
 		Name:           req.Name,
-		OrganizationID: req.OrganizationID,
+		OrganizationID: parsedUUID,
 	}
 
 	if err := s.userRepo.Create(ctx, user); err != nil {

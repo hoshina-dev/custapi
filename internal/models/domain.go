@@ -10,14 +10,21 @@ import (
 
 // User represents a user in the system
 type User struct {
-	ID             string         `gorm:"primaryKey;type:uuid;default:gen_random_uuid()" json:"id"`
-	Email          string         `gorm:"uniqueIndex;not null" json:"email"`
-	Name           string         `gorm:"not null" json:"name"`
-	OrganizationID string         `gorm:"type:uuid;not null;index" json:"organization_id"`
-	Organization   *Organization  `gorm:"foreignKey:OrganizationID" json:"organization,omitempty"`
-	CreatedAt      time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt      time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt      gorm.DeletedAt `gorm:"index" json:"-"`
+	ID                 uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	Email              string
+	Name               string
+	OrganizationID     uuid.UUID
+	Organization       Organization
+	Password           string
+	IsAdmin            bool
+	PhoneNumber        *string
+	SocialMedia        *string
+	Description        *string
+	AvatarURL          *string
+	ResearchCategories pq.StringArray
+	CreatedAt          time.Time `gorm:"autoCreateTime"`
+	UpdatedAt          time.Time `gorm:"autoUpdateTime"`
+	DeletedAt          gorm.DeletedAt
 }
 
 // Organization represents an organization in the system

@@ -8,10 +8,10 @@ import (
 
 // UserResponse is the DTO for user responses
 type UserResponse struct {
-	ID             string `json:"id" example:"550e8400-e29b-41d4-a716-446655440000"`
-	Email          string `json:"email" example:"user@example.com"`
-	Name           string `json:"name" example:"John Doe"`
-	OrganizationID string `json:"organization_id" example:"550e8400-e29b-41d4-a716-446655440001"`
+	ID             uuid.UUID `json:"id" example:"550e8400-e29b-41d4-a716-446655440000"`
+	Email          string    `json:"email" example:"user@example.com"`
+	Name           string    `json:"name" example:"John Doe"`
+	OrganizationID uuid.UUID `json:"organization_id" example:"550e8400-e29b-41d4-a716-446655440001"`
 }
 
 // CreateUserRequest is the DTO for user creation

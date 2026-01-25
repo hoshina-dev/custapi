@@ -3,7 +3,6 @@ package repositories
 import (
 	"context"
 
-	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
 	"gorm.io/gorm"
 )
@@ -28,7 +27,6 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 
 // Create creates a new user
 func (r *userRepository) Create(ctx context.Context, user *models.User) error {
-	user.ID = uuid.New().String()
 	return r.db.WithContext(ctx).Create(user).Error
 }
 
