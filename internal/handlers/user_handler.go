@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
@@ -10,13 +11,37 @@ import (
 // UserHandler handles user HTTP requests
 type UserHandler struct {
 	userService services.UserService
+	validate    *validator.Validate
 }
 
 // NewUserHandler creates a new user handler
 func NewUserHandler(userService services.UserService) *UserHandler {
 	return &UserHandler{
 		userService: userService,
+		validate:    validator.New(),
 	}
+}
+
+func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
+	req := new(models.CreateUserRequest)
+
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid json payload"})
+	}
+
+	if err := h.validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	user, err := h.userService.CreateUser(c.Context(), req)
+	if err != nil {
+		if err.Error() == "organization not found" {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: "failed to create user"})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(user.ToResponse())
 }
 
 // GetUsers godoc
@@ -37,12 +62,7 @@ func (h *UserHandler) GetUsers(c *fiber.Ctx) error {
 
 	response := make([]models.UserResponse, len(users))
 	for i, u := range users {
-		response[i] = models.UserResponse{
-			ID:             u.ID,
-			Email:          u.Email,
-			Name:           u.Name,
-			OrganizationID: u.OrganizationID,
-		}
+		response[i] = u.ToResponse()
 	}
 
 	return c.JSON(response)
@@ -75,14 +95,7 @@ func (h *UserHandler) GetUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: "user not found"})
 	}
 
-	response := models.UserResponse{
-		ID:             user.ID,
-		Email:          user.Email,
-		Name:           user.Name,
-		OrganizationID: user.OrganizationID,
-	}
-
-	return c.JSON(response)
+	return c.JSON(user.ToResponse())
 }
 
 // GetUsersByOrganization godoc
@@ -119,4 +132,47 @@ func (h *UserHandler) GetUsersByOrganization(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(response)
+}
+
+func (h *UserHandler) UpdateUser(c *fiber.Ctx) error {
+	id, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
+	}
+
+	req := new(models.UpdateUserRequest)
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid JSON payload"})
+	}
+
+	if err := h.validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	user, err := h.userService.Update(c.Context(), id, req)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	if user == nil {
+		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: "user not found"})
+	}
+
+	return c.JSON(user.ToResponse())
+}
+
+func (h *UserHandler) DeleteUser(c *fiber.Ctx) error {
+	id, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
+	}
+
+	if err := h.userService.Delete(c.Context(), id); err != nil {
+		if err.Error() == "user not found" {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
 }

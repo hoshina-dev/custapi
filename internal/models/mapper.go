@@ -50,7 +50,7 @@ func (req *CreateUserRequest) ToDomain() (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &User{
+	user := &User{
 		Email:              req.Email,
 		Name:               req.Name,
 		OrganizationID:     req.OrganizationID,
@@ -60,8 +60,11 @@ func (req *CreateUserRequest) ToDomain() (*User, error) {
 		Description:        req.Description,
 		AvatarURL:          req.AvatarURL,
 		ResearchCategories: req.ResearchCategories,
-		IsAdmin:            *req.IsAdmin,
-	}, nil
+	}
+	if req.IsAdmin != nil {
+		user.IsAdmin = *req.IsAdmin
+	}
+	return user, nil
 }
 
 func (req *UpdateUserRequest) ToDomain(id uuid.UUID) (*User, error) {
@@ -87,4 +90,21 @@ func (req *UpdateUserRequest) ToDomain(id uuid.UUID) (*User, error) {
 		user.IsAdmin = *req.IsAdmin
 	}
 	return user, nil
+}
+
+func (user *User) ToResponse() UserResponse {
+	return UserResponse{
+		ID:                 user.ID,
+		Email:              user.Email,
+		Name:               user.Name,
+		OrganizationID:     user.OrganizationID,
+		IsAdmin:            user.IsAdmin,
+		PhoneNumber:        user.PhoneNumber,
+		SocialMedia:        user.SocialMedia,
+		Description:        user.Description,
+		AvatarURL:          user.AvatarURL,
+		ResearchCategories: user.ResearchCategories,
+		CreatedAt:          user.CreatedAt,
+		UpdatedAt:          user.UpdatedAt,
+	}
 }

@@ -13,10 +13,10 @@ type UserResponse struct {
 	Name               string    `json:"name" example:"John Doe"`
 	OrganizationID     uuid.UUID `json:"organization_id" example:"550e8400-e29b-41d4-a716-446655440001"`
 	IsAdmin            bool      `json:"is_admin" example:"true"`
-	PhoneNumber        *string   `json:"phone_number" example:"+1234567890"`
-	SocialMedia        *string   `json:"social_media" example:"@john on Twitter, linkedin.com/in/john"`
-	Description        *string   `json:"description" example:"Senior researcher specializing in quantum computing"`
-	AvatarURL          *string   `json:"avatar_url" example:"https://example.com/avatar.jpg"`
+	PhoneNumber        *string   `json:"phone_number,omitempty" example:"+1234567890"`
+	SocialMedia        *string   `json:"social_media,omitempty" example:"@john on Twitter, linkedin.com/in/john"`
+	Description        *string   `json:"description,omitempty" example:"Senior researcher specializing in quantum computing"`
+	AvatarURL          *string   `json:"avatar_url,omitempty" example:"https://example.com/avatar.jpg"`
 	ResearchCategories []string  `json:"research_categories" example:"QuantumComputing,Qiskit,Cryogenics"`
 	CreatedAt          time.Time `json:"created_at" example:"2026-01-01T12:00:00.00000+07:00"`
 	UpdatedAt          time.Time `json:"updated_at" example:"2026-01-01T12:00:00.00000+07:00"`
