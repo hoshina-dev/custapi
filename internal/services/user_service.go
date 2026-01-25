@@ -15,6 +15,8 @@ type UserService interface {
 	GetUser(ctx context.Context, id uuid.UUID) (*models.User, error)
 	ListUsers(ctx context.Context) ([]models.User, error)
 	ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
+	Update(ctx context.Context, id uuid.UUID, req *models.UpdateUserRequest) (*models.User, error)
+	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 // userService is the concrete implementation of UserService
@@ -34,8 +36,7 @@ func NewUserService(userRepo repositories.UserRepository, orgRepo repositories.O
 // CreateUser creates a new user
 func (s *userService) CreateUser(ctx context.Context, req *models.CreateUserRequest) (*models.User, error) {
 	// Verify organization exists
-	parsedUUID, _ := uuid.Parse(req.OrganizationID)
-	org, err := s.orgRepo.FindByID(ctx, parsedUUID)
+	org, err := s.orgRepo.FindByID(ctx, req.OrganizationID)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +47,7 @@ func (s *userService) CreateUser(ctx context.Context, req *models.CreateUserRequ
 	user := &models.User{
 		Email:          req.Email,
 		Name:           req.Name,
-		OrganizationID: parsedUUID,
+		OrganizationID: req.OrganizationID,
 	}
 
 	if err := s.userRepo.Create(ctx, user); err != nil {
@@ -78,4 +79,22 @@ func (s *userService) ListUsersByOrganization(ctx context.Context, orgID uuid.UU
 	}
 
 	return s.userRepo.FindByOrganizationID(ctx, orgID)
+}
+
+func (s *userService) Update(ctx context.Context, id uuid.UUID, req *models.UpdateUserRequest) (*models.User, error) {
+	user, err := s.userRepo.FindByID(ctx, id)
+	if err != nil || user == nil {
+		return nil, err
+	}
+
+	updatedUser, err := req.ToDomain(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedUser, s.userRepo.Update(ctx, updatedUser)
+}
+
+func (s *userService) Delete(ctx context.Context, id uuid.UUID) error {
+	return s.userRepo.Delete(ctx, id)
 }
