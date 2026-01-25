@@ -118,17 +118,15 @@ func (h *UserHandler) GetUsersByOrganization(c *fiber.Ctx) error {
 
 	users, err := h.userService.ListUsersByOrganization(c.Context(), orgID)
 	if err != nil {
+		if err.Error() == "organization not found" {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
+		}
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
 
 	response := make([]models.UserResponse, len(users))
 	for i, u := range users {
-		response[i] = models.UserResponse{
-			ID:             u.ID,
-			Email:          u.Email,
-			Name:           u.Name,
-			OrganizationID: u.OrganizationID,
-		}
+		response[i] = u.ToResponse()
 	}
 
 	return c.JSON(response)
