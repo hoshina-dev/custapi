@@ -44,10 +44,9 @@ func (s *userService) CreateUser(ctx context.Context, req *models.CreateUserRequ
 		return nil, errors.New("organization not found")
 	}
 
-	user := &models.User{
-		Email:          req.Email,
-		Name:           req.Name,
-		OrganizationID: req.OrganizationID,
+	user, err := req.ToDomain()
+	if err != nil {
+		return nil, err
 	}
 
 	if err := s.userRepo.Create(ctx, user); err != nil {

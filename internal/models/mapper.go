@@ -45,6 +45,25 @@ func (org *Organization) ToResponse() OrganizationResponse {
 	}
 }
 
+func (req *CreateUserRequest) ToDomain() (*User, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+	return &User{
+		Email:              req.Email,
+		Name:               req.Name,
+		OrganizationID:     req.OrganizationID,
+		Password:           string(hashedPassword),
+		PhoneNumber:        req.PhoneNumber,
+		SocialMedia:        req.SocialMedia,
+		Description:        req.Description,
+		AvatarURL:          req.AvatarURL,
+		ResearchCategories: req.ResearchCategories,
+		IsAdmin:            *req.IsAdmin,
+	}, nil
+}
+
 func (req *UpdateUserRequest) ToDomain(id uuid.UUID) (*User, error) {
 	user := &User{ID: id, PhoneNumber: req.PhoneNumber, SocialMedia: req.SocialMedia, Description: req.Description,
 		AvatarURL: req.AvatarURL, ResearchCategories: req.ResearchCategories}
