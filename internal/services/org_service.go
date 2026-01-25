@@ -64,6 +64,8 @@ func (s *organizationService) UpdateOrganization(ctx context.Context, id uuid.UU
 	org, err := s.orgRepo.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
+	} else if org == nil {
+		return nil, nil
 	}
 
 	updatedOrg := req.ToDomain(org.ID)
