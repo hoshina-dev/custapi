@@ -12,7 +12,7 @@ func ScalarHandler(c *fiber.Ctx) error {
 const scalarHTML = `<!doctype html>
 <html>
   <head>
-    <title>CustAPI (Customer API) Document</title>
+    <title>CustAPI (Customer API) Documentation</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
