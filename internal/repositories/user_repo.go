@@ -38,7 +38,7 @@ func (r *userRepository) Create(ctx context.Context, user *models.User) error {
 // FindByID finds a user by ID
 func (r *userRepository) FindByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	var user models.User
-	err := r.db.WithContext(ctx).Preload("Organization").First(&user, id).Error
+	err := r.db.WithContext(ctx).First(&user, id).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
@@ -51,7 +51,7 @@ func (r *userRepository) FindByID(ctx context.Context, id uuid.UUID) (*models.Us
 // FindAll retrieves all users
 func (r *userRepository) FindAll(ctx context.Context) ([]models.User, error) {
 	var users []models.User
-	err := r.db.WithContext(ctx).Preload("Organization").Order("created_at DESC").Find(&users).Error
+	err := r.db.WithContext(ctx).Order("created_at DESC").Find(&users).Error
 	return users, err
 }
 
