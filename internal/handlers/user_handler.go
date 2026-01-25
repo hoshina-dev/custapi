@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
 	"github.com/hoshina-dev/custapi/internal/services"
 )
@@ -60,7 +61,10 @@ func (h *UserHandler) GetUsers(c *fiber.Ctx) error {
 //	@Failure		500	{object}	models.ErrorResponse
 //	@Router			/users/{id} [get]
 func (h *UserHandler) GetUser(c *fiber.Ctx) error {
-	id := c.Params("id")
+	id, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
+	}
 
 	user, err := h.userService.GetUser(c.Context(), id)
 	if err != nil {
@@ -94,7 +98,10 @@ func (h *UserHandler) GetUser(c *fiber.Ctx) error {
 //	@Failure		500		{object}	models.ErrorResponse
 //	@Router			/users/organization/{org_id} [get]
 func (h *UserHandler) GetUsersByOrganization(c *fiber.Ctx) error {
-	orgID := c.Params("org_id")
+	orgID, err := uuid.Parse(c.Params("org_id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
+	}
 
 	users, err := h.userService.ListUsersByOrganization(c.Context(), orgID)
 	if err != nil {

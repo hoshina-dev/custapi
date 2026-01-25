@@ -13,9 +13,9 @@ import (
 // UserRepository defines user persistence operations
 type UserRepository interface {
 	Create(ctx context.Context, user *models.User) error
-	FindByID(ctx context.Context, id string) (*models.User, error)
+	FindByID(ctx context.Context, id uuid.UUID) (*models.User, error)
 	FindAll(ctx context.Context) ([]models.User, error)
-	FindByOrganizationID(ctx context.Context, orgID string) ([]models.User, error)
+	FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
 	Update(ctx context.Context, user *models.User) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }
@@ -36,9 +36,9 @@ func (r *userRepository) Create(ctx context.Context, user *models.User) error {
 }
 
 // FindByID finds a user by ID
-func (r *userRepository) FindByID(ctx context.Context, id string) (*models.User, error) {
+func (r *userRepository) FindByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	var user models.User
-	err := r.db.WithContext(ctx).Preload("Organization").First(&user, "id = ?", id).Error
+	err := r.db.WithContext(ctx).Preload("Organization").First(&user, id).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
@@ -56,7 +56,7 @@ func (r *userRepository) FindAll(ctx context.Context) ([]models.User, error) {
 }
 
 // FindByOrganizationID finds all users in an organization
-func (r *userRepository) FindByOrganizationID(ctx context.Context, orgID string) ([]models.User, error) {
+func (r *userRepository) FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.User, error) {
 	var users []models.User
 	err := r.db.WithContext(ctx).Where("organization_id = ?", orgID).Order("created_at DESC").Find(&users).Error
 	return users, err
