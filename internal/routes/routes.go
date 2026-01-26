@@ -19,6 +19,9 @@ func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
+	// Scalar API Reference UI
+	app.Get("/scalar", handlers.ScalarHandler)
+
 	// API v1
 	v1 := app.Group("/api/v1")
 	{

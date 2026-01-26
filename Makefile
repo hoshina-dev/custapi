@@ -22,6 +22,7 @@ swagger:
 	go run github.com/swaggo/swag/cmd/swag@latest init -g cmd/main.go -o docs --parseDependency --parseInternal
 
 format:
+	go run github.com/swaggo/swag/cmd/swag@v1.16.6 fmt
 	go fmt ./...
 	gofmt -s -w .
 

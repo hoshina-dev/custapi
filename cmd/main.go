@@ -20,7 +20,6 @@ import (
 // @title			Customer API
 // @version		1.0
 // @description	A simple REST API for managing users and organizations
-// @host			localhost:8080
 // @BasePath		/api/v1
 func main() {
 	// Load configuration
