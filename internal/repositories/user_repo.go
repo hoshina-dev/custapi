@@ -18,7 +18,7 @@ type UserRepository interface {
 	FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
 	Update(ctx context.Context, user *models.User) error
 	Delete(ctx context.Context, id uuid.UUID) error
-	Search(ctx context.Context, query string) ([]models.User, error)
+	Search(ctx context.Context, query string, limit int) ([]models.User, error)
 }
 
 // userRepository is the concrete implementation of UserRepository

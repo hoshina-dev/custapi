@@ -17,7 +17,7 @@ type OrganizationService interface {
 	GetAllCoords(ctx context.Context) ([]models.Organization, error)
 	UpdateOrganization(ctx context.Context, id uuid.UUID, req *models.UpdateOrganizationRequest) (*models.Organization, error)
 	DeleteOrganization(ctx context.Context, id uuid.UUID) error
-	SearchOrganizations(ctx context.Context, query string) ([]models.Organization, error)
+	SearchOrganizations(ctx context.Context, query string, limit int) ([]models.Organization, error)
 }
 
 // organizationService is the concrete implementation of OrganizationService

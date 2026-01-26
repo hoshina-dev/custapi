@@ -19,7 +19,7 @@ type OrganizationRepository interface {
 	FindAllCoords(ctx context.Context) ([]models.Organization, error)
 	Update(ctx context.Context, org *models.Organization) error
 	Delete(ctx context.Context, id uuid.UUID) error
-	Search(ctx context.Context, query string) ([]models.Organization, error)
+	Search(ctx context.Context, query string, limit int) ([]models.Organization, error)
 }
 
 // organizationRepository is the concrete implementation of OrganizationRepository
