@@ -17,6 +17,7 @@ type UserService interface {
 	ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
 	Update(ctx context.Context, id uuid.UUID, req *models.UpdateUserRequest) (*models.User, error)
 	Delete(ctx context.Context, id uuid.UUID) error
+	SearchUsers(ctx context.Context, query string) ([]models.User, error)
 }
 
 // userService is the concrete implementation of UserService
@@ -96,4 +97,9 @@ func (s *userService) Update(ctx context.Context, id uuid.UUID, req *models.Upda
 
 func (s *userService) Delete(ctx context.Context, id uuid.UUID) error {
 	return s.userRepo.Delete(ctx, id)
+}
+
+// SearchUsers searches users by name or email
+func (s *userService) SearchUsers(ctx context.Context, query string, limit int) ([]models.User, error) {
+	return s.userRepo.Search(ctx, query, limit)
 }

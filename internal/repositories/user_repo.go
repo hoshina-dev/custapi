@@ -18,6 +18,7 @@ type UserRepository interface {
 	FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
 	Update(ctx context.Context, user *models.User) error
 	Delete(ctx context.Context, id uuid.UUID) error
+	Search(ctx context.Context, query string) ([]models.User, error)
 }
 
 // userRepository is the concrete implementation of UserRepository
@@ -75,4 +76,21 @@ func (r *userRepository) Delete(ctx context.Context, id uuid.UUID) error {
 		return errors.New("user not found")
 	}
 	return nil
+}
+
+// Search searches users by name or email using ILIKE
+func (r *userRepository) Search(ctx context.Context, query string, limit int) ([]models.User, error) {
+	var users []models.User
+	searchPattern := "%" + query + "%"
+	db := r.db.WithContext(ctx).
+		Preload("Organization").
+		Where("name ILIKE ? OR email ILIKE ?", searchPattern, searchPattern).
+		Order("name ASC")
+
+	if limit > 0 {
+		db = db.Limit(limit)
+	}
+
+	err := db.Find(&users).Error
+	return users, err
 }

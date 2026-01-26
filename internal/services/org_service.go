@@ -17,6 +17,7 @@ type OrganizationService interface {
 	GetAllCoords(ctx context.Context) ([]models.Organization, error)
 	UpdateOrganization(ctx context.Context, id uuid.UUID, req *models.UpdateOrganizationRequest) (*models.Organization, error)
 	DeleteOrganization(ctx context.Context, id uuid.UUID) error
+	SearchOrganizations(ctx context.Context, query string) ([]models.Organization, error)
 }
 
 // organizationService is the concrete implementation of OrganizationService
@@ -73,4 +74,9 @@ func (s *organizationService) UpdateOrganization(ctx context.Context, id uuid.UU
 
 func (s *organizationService) DeleteOrganization(ctx context.Context, id uuid.UUID) error {
 	return s.orgRepo.Delete(ctx, id)
+}
+
+// SearchOrganizations searches organizations by name
+func (s *organizationService) SearchOrganizations(ctx context.Context, query string, limit int) ([]models.Organization, error) {
+	return s.orgRepo.Search(ctx, query, limit)
 }

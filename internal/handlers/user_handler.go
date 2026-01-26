@@ -216,3 +216,41 @@ func (h *UserHandler) DeleteUser(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
+
+// SearchUsers godoc
+//
+//	@Summary		Search users
+//	@Description	Search users by name or email using ILIKE query
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			q		query		string	true	"Search query"
+//	@Param			limit	query		int		false	"Maximum number of results to return (default: 100)"
+//	@Success		200		{array}		models.UserResponse
+//	@Failure		400		{object}	models.ErrorResponse
+//	@Failure		500		{object}	models.ErrorResponse
+//	@Router			/users/search [get]
+func (h *UserHandler) SearchUsers(c *fiber.Ctx) error {
+	query := c.Query("q")
+	if query == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "query parameter 'q' is required"})
+	}
+
+	// Parse limit parameter with default of 100
+	limit := c.QueryInt("limit", 100)
+	if limit < 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "limit must be non-negative"})
+	}
+
+	users, err := h.userService.SearchUsers(c.Context(), query, limit)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	response := make([]models.UserResponse, len(users))
+	for i, u := range users {
+		response[i] = u.ToResponse()
+	}
+
+	return c.JSON(response)
+}

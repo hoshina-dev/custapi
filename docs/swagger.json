@@ -178,6 +178,53 @@
                 }
             }
         },
+        "/organizations/search": {
+            "get": {
+                "description": "Search organizations by name using ILIKE query",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organizations"
+                ],
+                "summary": "Search organizations",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query",
+                        "name": "q",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.OrganizationResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/organizations/{id}": {
             "get": {
                 "description": "Get a single organization by their ID",
@@ -452,6 +499,53 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/search": {
+            "get": {
+                "description": "Search users by name or email using ILIKE query",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Search users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query",
+                        "name": "q",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
                         }
