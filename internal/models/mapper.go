@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (req *CreateOrganizationRequest) ToDomain() *Organization {
@@ -41,5 +42,69 @@ func (org *Organization) ToResponse() OrganizationResponse {
 		ImageUrls:   org.ImageUrls,
 		CreatedAt:   org.CreatedAt,
 		UpdatedAt:   org.UpdatedAt,
+	}
+}
+
+func (req *CreateUserRequest) ToDomain() (*User, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+	user := &User{
+		Email:              req.Email,
+		Name:               req.Name,
+		OrganizationID:     req.OrganizationID,
+		Password:           string(hashedPassword),
+		PhoneNumber:        req.PhoneNumber,
+		SocialMedia:        req.SocialMedia,
+		Description:        req.Description,
+		AvatarURL:          req.AvatarURL,
+		ResearchCategories: req.ResearchCategories,
+	}
+	if req.IsAdmin != nil {
+		user.IsAdmin = *req.IsAdmin
+	}
+	return user, nil
+}
+
+func (req *UpdateUserRequest) ToDomain(id uuid.UUID) (*User, error) {
+	user := &User{ID: id, PhoneNumber: req.PhoneNumber, SocialMedia: req.SocialMedia, Description: req.Description,
+		AvatarURL: req.AvatarURL, ResearchCategories: req.ResearchCategories}
+	if req.Password != nil {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(*req.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return nil, err
+		}
+		user.Password = string(hashedPassword)
+	}
+	if req.Email != nil {
+		user.Email = *req.Email
+	}
+	if req.Name != nil {
+		user.Name = *req.Name
+	}
+	if req.OrganizationID != nil {
+		user.OrganizationID = *req.OrganizationID
+	}
+	if req.IsAdmin != nil {
+		user.IsAdmin = *req.IsAdmin
+	}
+	return user, nil
+}
+
+func (user *User) ToResponse() UserResponse {
+	return UserResponse{
+		ID:                 user.ID,
+		Email:              user.Email,
+		Name:               user.Name,
+		OrganizationID:     user.OrganizationID,
+		IsAdmin:            user.IsAdmin,
+		PhoneNumber:        user.PhoneNumber,
+		SocialMedia:        user.SocialMedia,
+		Description:        user.Description,
+		AvatarURL:          user.AvatarURL,
+		ResearchCategories: user.ResearchCategories,
+		CreatedAt:          user.CreatedAt,
+		UpdatedAt:          user.UpdatedAt,
 	}
 }

@@ -366,6 +366,62 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Create a new user with email, name, organization, and optional details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create a new user",
+                "parameters": [
+                    {
+                        "description": "User to create",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/users/organization/{org_id}": {
@@ -457,6 +513,114 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Soft delete a user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update an existing user by ID (partial updates supported)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Fields to update",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.UpdateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                        }
+                    }
+                }
             }
         }
     },
@@ -501,7 +665,66 @@ const docTemplate = `{
                 }
             }
         },
-        "ErrorResponse": {
+        "github_com_hoshina-dev_custapi_internal_models.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "organization_id",
+                "password"
+            ],
+            "properties": {
+                "avatar_url": {
+                    "type": "string",
+                    "example": "https://example.com/avatar.jpg"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Senior researcher specializing in quantum computing"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "is_admin": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "John Doe"
+                },
+                "organization_id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "PassWord123!"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "+1234567890"
+                },
+                "research_categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "QuantumComputing",
+                        "Qiskit",
+                        "Cryogenics"
+                    ]
+                },
+                "social_media": {
+                    "type": "string",
+                    "example": "@john on Twitter, linkedin.com/in/john"
+                }
+            }
+        },
+        "github_com_hoshina-dev_custapi_internal_models.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
@@ -627,9 +850,74 @@ const docTemplate = `{
                 }
             }
         },
-        "UserResponse": {
+        "github_com_hoshina-dev_custapi_internal_models.UpdateUserRequest": {
             "type": "object",
             "properties": {
+                "avatar_url": {
+                    "type": "string",
+                    "example": "https://example.com/avatar.jpg"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Senior researcher specializing in quantum computing"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "is_admin": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "John Doe"
+                },
+                "organization_id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "PassWord123!"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "+1234567890"
+                },
+                "research_categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "QuantumComputing",
+                        "Qiskit",
+                        "Cryogenics"
+                    ]
+                },
+                "social_media": {
+                    "type": "string",
+                    "example": "@john on Twitter, linkedin.com/in/john"
+                }
+            }
+        },
+        "github_com_hoshina-dev_custapi_internal_models.UserResponse": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "type": "string",
+                    "example": "https://example.com/avatar.jpg"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-01-01T12:00:00.00000+07:00"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Senior researcher specializing in quantum computing"
+                },
                 "email": {
                     "type": "string",
                     "example": "user@example.com"
@@ -638,6 +926,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
+                "is_admin": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "name": {
                     "type": "string",
                     "example": "John Doe"
@@ -645,6 +937,29 @@ const docTemplate = `{
                 "organization_id": {
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "+1234567890"
+                },
+                "research_categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "QuantumComputing",
+                        "Qiskit",
+                        "Cryogenics"
+                    ]
+                },
+                "social_media": {
+                    "type": "string",
+                    "example": "@john on Twitter, linkedin.com/in/john"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-01-01T12:00:00.00000+07:00"
                 }
             }
         }

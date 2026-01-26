@@ -62,7 +62,7 @@ func (s *organizationService) GetAllCoords(ctx context.Context) ([]models.Organi
 
 func (s *organizationService) UpdateOrganization(ctx context.Context, id uuid.UUID, req *models.UpdateOrganizationRequest) (*models.Organization, error) {
 	org, err := s.orgRepo.FindByID(ctx, id)
-	if err != nil {
+	if err != nil || org == nil {
 		return nil, err
 	}
 
