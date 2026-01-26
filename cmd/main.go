@@ -17,10 +17,16 @@ import (
 	"github.com/hoshina-dev/custapi/internal/services"
 )
 
-// @title			Customer API
-// @version		1.0
-// @description	A simple REST API for managing users and organizations
-// @BasePath		/api/v1
+// @title				Customer API
+// @version			1.0
+// @description		A simple REST API for managing users and organizations
+// @BasePath			/api/v1
+//
+// @tag.name			organizations
+// @tag.description	Operations related to organizations
+//
+// @tag.name			users
+// @tag.description	Operations related to users
 func main() {
 	// Load configuration
 	cfg := config.Load()

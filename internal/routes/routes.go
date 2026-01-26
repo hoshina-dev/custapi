@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
@@ -18,9 +20,11 @@ func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *
 	app.Use(middleware.ErrorHandler())
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
+	fmt.Println("📖 Swagger docs available at http://localhost:8080/swagger")
 
 	// Scalar API Reference UI
 	app.Get("/scalar", handlers.ScalarHandler)
+	fmt.Println("📖 Scalar docs available at http://localhost:8080/scalar")
 
 	// API v1
 	v1 := app.Group("/api/v1")
