@@ -29,6 +29,50 @@ definitions:
     - lng
     - name
     type: object
+  github_com_hoshina-dev_custapi_internal_models.CreateUserRequest:
+    properties:
+      avatar_url:
+        example: https://example.com/avatar.jpg
+        type: string
+      description:
+        example: Senior researcher specializing in quantum computing
+        type: string
+      email:
+        example: user@example.com
+        type: string
+      is_admin:
+        example: true
+        type: boolean
+      name:
+        example: John Doe
+        maxLength: 255
+        type: string
+      organization_id:
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+      password:
+        example: PassWord123!
+        type: string
+      phone_number:
+        example: "+1234567890"
+        type: string
+      research_categories:
+        example:
+        - QuantumComputing
+        - Qiskit
+        - Cryogenics
+        items:
+          type: string
+        type: array
+      social_media:
+        example: '@john on Twitter, linkedin.com/in/john'
+        type: string
+    required:
+    - email
+    - name
+    - organization_id
+    - password
+    type: object
   github_com_hoshina-dev_custapi_internal_models.ErrorResponse:
     properties:
       error:
@@ -118,19 +162,87 @@ definitions:
         example: Acme Corp
         type: string
     type: object
+  github_com_hoshina-dev_custapi_internal_models.UpdateUserRequest:
+    properties:
+      avatar_url:
+        example: https://example.com/avatar.jpg
+        type: string
+      description:
+        example: Senior researcher specializing in quantum computing
+        type: string
+      email:
+        example: user@example.com
+        type: string
+      is_admin:
+        example: true
+        type: boolean
+      name:
+        example: John Doe
+        maxLength: 255
+        type: string
+      organization_id:
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+      password:
+        example: PassWord123!
+        type: string
+      phone_number:
+        example: "+1234567890"
+        type: string
+      research_categories:
+        example:
+        - QuantumComputing
+        - Qiskit
+        - Cryogenics
+        items:
+          type: string
+        type: array
+      social_media:
+        example: '@john on Twitter, linkedin.com/in/john'
+        type: string
+    type: object
   github_com_hoshina-dev_custapi_internal_models.UserResponse:
     properties:
+      avatar_url:
+        example: https://example.com/avatar.jpg
+        type: string
+      created_at:
+        example: "2026-01-01T12:00:00.00000+07:00"
+        type: string
+      description:
+        example: Senior researcher specializing in quantum computing
+        type: string
       email:
         example: user@example.com
         type: string
       id:
         example: 550e8400-e29b-41d4-a716-446655440000
         type: string
+      is_admin:
+        example: true
+        type: boolean
       name:
         example: John Doe
         type: string
       organization_id:
         example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+      phone_number:
+        example: "+1234567890"
+        type: string
+      research_categories:
+        example:
+        - QuantumComputing
+        - Qiskit
+        - Cryogenics
+        items:
+          type: string
+        type: array
+      social_media:
+        example: '@john on Twitter, linkedin.com/in/john'
+        type: string
+      updated_at:
+        example: "2026-01-01T12:00:00.00000+07:00"
         type: string
     type: object
 host: localhost:8080
@@ -373,7 +485,75 @@ paths:
       summary: Get all users
       tags:
       - users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with email, name, organization, and optional
+        details
+      parameters:
+      - description: User to create
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Create a new user
+      tags:
+      - users
   /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft delete a user by ID
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Delete a user
+      tags:
+      - users
     get:
       consumes:
       - application/json
@@ -400,6 +580,48 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
       summary: Get a user by ID
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: Update an existing user by ID (partial updates supported)
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Fields to update
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Update a user
       tags:
       - users
   /users/organization/{org_id}:
