@@ -386,7 +386,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.CreateUserRequest"
+                            "$ref": "#/definitions/CreateUserRequest"
                         }
                     }
                 ],
@@ -394,31 +394,31 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse"
+                            "$ref": "#/definitions/UserResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -542,19 +542,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -585,7 +585,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.UpdateUserRequest"
+                            "$ref": "#/definitions/UpdateUserRequest"
                         }
                     }
                 ],
@@ -593,31 +593,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse"
+                            "$ref": "#/definitions/UserResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -665,7 +665,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_hoshina-dev_custapi_internal_models.CreateUserRequest": {
+        "CreateUserRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -724,7 +724,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_hoshina-dev_custapi_internal_models.ErrorResponse": {
+        "ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
@@ -850,7 +850,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_hoshina-dev_custapi_internal_models.UpdateUserRequest": {
+        "UpdateUserRequest": {
             "type": "object",
             "properties": {
                 "avatar_url": {
@@ -903,7 +903,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_hoshina-dev_custapi_internal_models.UserResponse": {
+        "UserResponse": {
             "type": "object",
             "properties": {
                 "avatar_url": {

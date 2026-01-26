@@ -29,7 +29,7 @@ definitions:
     - lng
     - name
     type: object
-  github_com_hoshina-dev_custapi_internal_models.CreateUserRequest:
+  CreateUserRequest:
     properties:
       avatar_url:
         example: https://example.com/avatar.jpg
@@ -73,7 +73,7 @@ definitions:
     - organization_id
     - password
     type: object
-  github_com_hoshina-dev_custapi_internal_models.ErrorResponse:
+  ErrorResponse:
     properties:
       error:
         example: error message
@@ -162,7 +162,7 @@ definitions:
         example: Acme Corp
         type: string
     type: object
-  github_com_hoshina-dev_custapi_internal_models.UpdateUserRequest:
+  UpdateUserRequest:
     properties:
       avatar_url:
         example: https://example.com/avatar.jpg
@@ -201,7 +201,7 @@ definitions:
         example: '@john on Twitter, linkedin.com/in/john'
         type: string
     type: object
-  github_com_hoshina-dev_custapi_internal_models.UserResponse:
+  UserResponse:
     properties:
       avatar_url:
         example: https://example.com/avatar.jpg
@@ -495,30 +495,30 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.CreateUserRequest'
+          $ref: '#/definitions/CreateUserRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse'
+            $ref: '#/definitions/UserResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
       summary: Create a new user
       tags:
       - users
@@ -541,15 +541,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
       summary: Delete a user
       tags:
       - users
@@ -596,30 +596,30 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UpdateUserRequest'
+          $ref: '#/definitions/UpdateUserRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse'
+            $ref: '#/definitions/UserResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
         "422":
           description: Unprocessable Entity
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
       summary: Update a user
       tags:
       - users
