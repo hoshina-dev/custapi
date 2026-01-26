@@ -140,12 +140,7 @@ func (h *UserHandler) GetUsersByOrganization(c *fiber.Ctx) error {
 
 	response := make([]models.UserResponse, len(users))
 	for i, u := range users {
-		response[i] = models.UserResponse{
-			ID:             u.ID,
-			Email:          u.Email,
-			Name:           u.Name,
-			OrganizationID: u.OrganizationID,
-		}
+		response[i] = u.ToResponse()
 	}
 
 	return c.JSON(response)
@@ -247,12 +242,7 @@ func (h *UserHandler) SearchUsers(c *fiber.Ctx) error {
 
 	response := make([]models.UserResponse, len(users))
 	for i, u := range users {
-		response[i] = models.UserResponse{
-			ID:             u.ID,
-			Email:          u.Email,
-			Name:           u.Name,
-			OrganizationID: u.OrganizationID,
-		}
+		response[i] = u.ToResponse()
 	}
 
 	return c.JSON(response)
