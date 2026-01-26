@@ -19,6 +19,7 @@ type OrganizationRepository interface {
 	FindAllCoords(ctx context.Context) ([]models.Organization, error)
 	Update(ctx context.Context, org *models.Organization) error
 	Delete(ctx context.Context, id uuid.UUID) error
+	Search(ctx context.Context, query string) ([]models.Organization, error)
 }
 
 // organizationRepository is the concrete implementation of OrganizationRepository
@@ -81,4 +82,15 @@ func (r *organizationRepository) Delete(ctx context.Context, id uuid.UUID) error
 		return errors.New("organization not found")
 	}
 	return nil
+}
+
+// Search searches organizations by name using ILIKE
+func (r *organizationRepository) Search(ctx context.Context, query string) ([]models.Organization, error) {
+	var orgs []models.Organization
+	searchPattern := "%" + query + "%"
+	err := r.db.WithContext(ctx).
+		Where("name ILIKE ?", searchPattern).
+		Order("name ASC").
+		Find(&orgs).Error
+	return orgs, err
 }

@@ -23,13 +23,16 @@ func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *
 	v1 := app.Group("/api/v1")
 	{
 		// Users routes
-		v1.Get("/users", userHandler.GetUsers)
-		v1.Get("/users/:id", userHandler.GetUser)
-		v1.Get("/users/organization/:org_id", userHandler.GetUsersByOrganization)
+		users := v1.Group("/users")
+		users.Get("/", userHandler.GetUsers)
+		users.Get("/search", userHandler.SearchUsers)
+		users.Get("/organization/:org_id", userHandler.GetUsersByOrganization)
+		users.Get("/:id", userHandler.GetUser)
 
 		// Organizations routes
 		org := v1.Group("/organizations")
 		org.Get("/", orgHandler.GetOrganizations)
+		org.Get("/search", orgHandler.SearchOrganizations)
 		org.Get("/coordinates", orgHandler.GetAllCoords)
 		org.Get("/:id", orgHandler.GetOrganization)
 		org.Post("/", orgHandler.CreateOrganization)

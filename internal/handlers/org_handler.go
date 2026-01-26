@@ -238,3 +238,34 @@ func (h *OrgHandler) GetByIDs(c *fiber.Ctx) error {
 
 	return c.JSON(res)
 }
+
+// SearchOrganizations godoc
+//
+//	@Summary		Search organizations
+//	@Description	Search organizations by name using ILIKE query
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Param			q		query		string	true	"Search query"
+//	@Success		200		{array}		models.OrganizationResponse
+//	@Failure		400		{object}	models.ErrorResponse
+//	@Failure		500		{object}	models.ErrorResponse
+//	@Router			/organizations/search [get]
+func (h *OrgHandler) SearchOrganizations(c *fiber.Ctx) error {
+	query := c.Query("q")
+	if query == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "query parameter 'q' is required"})
+	}
+
+	orgs, err := h.orgService.SearchOrganizations(c.Context(), query)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	response := make([]models.OrganizationResponse, len(orgs))
+	for i, o := range orgs {
+		response[i] = o.ToResponse()
+	}
+
+	return c.JSON(response)
+}

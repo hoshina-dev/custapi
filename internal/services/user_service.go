@@ -15,6 +15,7 @@ type UserService interface {
 	GetUser(ctx context.Context, id string) (*models.User, error)
 	ListUsers(ctx context.Context) ([]models.User, error)
 	ListUsersByOrganization(ctx context.Context, orgID string) ([]models.User, error)
+	SearchUsers(ctx context.Context, query string) ([]models.User, error)
 }
 
 // userService is the concrete implementation of UserService
@@ -79,4 +80,9 @@ func (s *userService) ListUsersByOrganization(ctx context.Context, orgID string)
 	}
 
 	return s.userRepo.FindByOrganizationID(ctx, orgID)
+}
+
+// SearchUsers searches users by name or email
+func (s *userService) SearchUsers(ctx context.Context, query string) ([]models.User, error) {
+	return s.userRepo.Search(ctx, query)
 }

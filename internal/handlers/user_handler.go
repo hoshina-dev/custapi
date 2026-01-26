@@ -113,3 +113,39 @@ func (h *UserHandler) GetUsersByOrganization(c *fiber.Ctx) error {
 
 	return c.JSON(response)
 }
+
+// SearchUsers godoc
+//
+//	@Summary		Search users
+//	@Description	Search users by name or email using ILIKE query
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			q		query		string	true	"Search query"
+//	@Success		200		{array}		models.UserResponse
+//	@Failure		400		{object}	models.ErrorResponse
+//	@Failure		500		{object}	models.ErrorResponse
+//	@Router			/users/search [get]
+func (h *UserHandler) SearchUsers(c *fiber.Ctx) error {
+	query := c.Query("q")
+	if query == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "query parameter 'q' is required"})
+	}
+
+	users, err := h.userService.SearchUsers(c.Context(), query)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	response := make([]models.UserResponse, len(users))
+	for i, u := range users {
+		response[i] = models.UserResponse{
+			ID:             u.ID,
+			Email:          u.Email,
+			Name:           u.Name,
+			OrganizationID: u.OrganizationID,
+		}
+	}
+
+	return c.JSON(response)
+}

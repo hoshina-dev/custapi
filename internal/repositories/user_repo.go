@@ -14,6 +14,7 @@ type UserRepository interface {
 	FindByID(ctx context.Context, id string) (*models.User, error)
 	FindAll(ctx context.Context) ([]models.User, error)
 	FindByOrganizationID(ctx context.Context, orgID string) ([]models.User, error)
+	Search(ctx context.Context, query string) ([]models.User, error)
 }
 
 // userRepository is the concrete implementation of UserRepository
@@ -56,5 +57,17 @@ func (r *userRepository) FindAll(ctx context.Context) ([]models.User, error) {
 func (r *userRepository) FindByOrganizationID(ctx context.Context, orgID string) ([]models.User, error) {
 	var users []models.User
 	err := r.db.WithContext(ctx).Where("organization_id = ?", orgID).Order("created_at DESC").Find(&users).Error
+	return users, err
+}
+
+// Search searches users by name or email using ILIKE
+func (r *userRepository) Search(ctx context.Context, query string) ([]models.User, error) {
+	var users []models.User
+	searchPattern := "%" + query + "%"
+	err := r.db.WithContext(ctx).
+		Preload("Organization").
+		Where("name ILIKE ? OR email ILIKE ?", searchPattern, searchPattern).
+		Order("name ASC").
+		Find(&users).Error
 	return users, err
 }
