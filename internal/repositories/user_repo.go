@@ -18,7 +18,6 @@ type UserRepository interface {
 	FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
 	Update(ctx context.Context, user *models.User) error
 	Delete(ctx context.Context, id uuid.UUID) error
-	FindByOrganizationID(ctx context.Context, orgID string) ([]models.User, error)
 	Search(ctx context.Context, query string) ([]models.User, error)
 }
 
@@ -34,7 +33,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 
 // Create creates a new user
 func (r *userRepository) Create(ctx context.Context, user *models.User) error {
-	user.ID = uuid.New().String()
+	user.ID = uuid.New()
 	return r.db.WithContext(ctx).Create(user).Error
 }
 

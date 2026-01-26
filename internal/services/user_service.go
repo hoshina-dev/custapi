@@ -17,7 +17,6 @@ type UserService interface {
 	ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
 	Update(ctx context.Context, id uuid.UUID, req *models.UpdateUserRequest) (*models.User, error)
 	Delete(ctx context.Context, id uuid.UUID) error
-	ListUsersByOrganization(ctx context.Context, orgID string) ([]models.User, error)
 	SearchUsers(ctx context.Context, query string) ([]models.User, error)
 }
 
