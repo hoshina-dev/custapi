@@ -474,6 +474,10 @@ paths:
         name: q
         required: true
         type: string
+      - description: 'Maximum number of results to return (default: 100)'
+        in: query
+        name: limit
+        type: integer
       produces:
       - application/json
       responses:
@@ -481,16 +485,16 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.OrganizationResponse'
+              $ref: '#/definitions/OrganizationResponse'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
       summary: Search organizations
       tags:
       - organizations
@@ -696,6 +700,10 @@ paths:
         name: q
         required: true
         type: string
+      - description: 'Maximum number of results to return (default: 100)'
+        in: query
+        name: limit
+        type: integer
       produces:
       - application/json
       responses:
@@ -703,17 +711,22 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse'
+              $ref: '#/definitions/UserResponse'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+            $ref: '#/definitions/ErrorResponse'
       summary: Search users
       tags:
       - users
 swagger: "2.0"
+tags:
+- description: Operations related to organizations
+  name: organizations
+- description: Operations related to users
+  name: users

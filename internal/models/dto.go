@@ -20,7 +20,7 @@ type UserResponse struct {
 	ResearchCategories []string  `json:"research_categories" example:"QuantumComputing,Qiskit,Cryogenics"`
 	CreatedAt          time.Time `json:"created_at" example:"2026-01-01T12:00:00.00000+07:00"`
 	UpdatedAt          time.Time `json:"updated_at" example:"2026-01-01T12:00:00.00000+07:00"`
-} // @name UserResponse
+} //	@name	UserResponse
 
 // CreateUserRequest is the DTO for user creation
 type CreateUserRequest struct {
@@ -34,7 +34,7 @@ type CreateUserRequest struct {
 	AvatarURL          *string   `json:"avatar_url" validate:"omitempty,url" example:"https://example.com/avatar.jpg"`
 	ResearchCategories []string  `json:"research_categories" example:"QuantumComputing,Qiskit,Cryogenics"`
 	IsAdmin            *bool     `json:"is_admin" example:"true"`
-} // @name CreateUserRequest
+} //	@name	CreateUserRequest
 
 type UpdateUserRequest struct {
 	Email              *string    `json:"email" validate:"omitempty,email" example:"user@example.com"`
@@ -47,7 +47,7 @@ type UpdateUserRequest struct {
 	AvatarURL          *string    `json:"avatar_url" validate:"omitempty,url" example:"https://example.com/avatar.jpg"`
 	ResearchCategories []string   `json:"research_categories" example:"QuantumComputing,Qiskit,Cryogenics"`
 	IsAdmin            *bool      `json:"is_admin" example:"true"`
-} // @name UpdateUserRequest
+} //	@name	UpdateUserRequest
 
 // OrganizationResponse is the DTO for organization responses
 type OrganizationResponse struct {
@@ -60,7 +60,7 @@ type OrganizationResponse struct {
 	ImageUrls   []string  `json:"image_urls" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
 	CreatedAt   time.Time `json:"created_at" example:"2026-01-01T12:00:00.00000+07:00"`
 	UpdatedAt   time.Time `json:"updated_at" example:"2026-01-01T12:00:00.00000+07:00"`
-} // @name OrganizationResponse
+} //	@name	OrganizationResponse
 
 // CreateOrganizationRequest is the DTO for organization creation
 type CreateOrganizationRequest struct {
@@ -70,7 +70,7 @@ type CreateOrganizationRequest struct {
 	Address     *string  `json:"address" example:"254 St, Bangkok, TH"`
 	Description *string  `json:"description" example:"Higher education institution"`
 	ImageUrls   []string `json:"image_urls" validate:"omitempty,dive,url" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
-} // @name CreateOrganizationRequest
+} //	@name	CreateOrganizationRequest
 
 type UpdateOrganizationRequest struct {
 	Name        *string  `json:"name" example:"Acme Corp"`
@@ -79,19 +79,19 @@ type UpdateOrganizationRequest struct {
 	Address     *string  `json:"address" example:"254 St, Bangkok, TH"`
 	Description *string  `json:"description" example:"Higher education institution"`
 	ImageUrls   []string `json:"image_urls" validate:"omitempty,dive,url" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
-} // @name UpdateOrganizationRequest
+} //	@name	UpdateOrganizationRequest
 
 type OrganizationCoord struct {
 	ID        uuid.UUID `json:"id" example:"550e8400-e29b-41d4-a716-446655440001"`
 	Latitude  float64   `json:"lat" example:"13.7388"`
 	Longitude float64   `json:"lng" example:"100.5322"`
-} // @name OrganizationCoord
+} //	@name	OrganizationCoord
 
 type GetOrganizationsByIDsRequest struct {
 	IDs []uuid.UUID `json:"ids" validate:"required" example:"550e8400-e29b-41d4-a716-446655440000,550e8400-e29b-41d4-a716-446655440001"`
-} // @name GetOrganizationsByIDsRequest
+} //	@name	GetOrganizationsByIDsRequest
 
 // ErrorResponse is the DTO for error responses
 type ErrorResponse struct {
 	Error string `json:"error" example:"error message"`
-} // @name ErrorResponse
+} //	@name	ErrorResponse

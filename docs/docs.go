@@ -204,6 +204,12 @@ const docTemplate = `{
                         "name": "q",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Maximum number of results to return (default: 100)",
+                        "name": "limit",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -212,20 +218,20 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.OrganizationResponse"
+                                "$ref": "#/definitions/OrganizationResponse"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -538,6 +544,12 @@ const docTemplate = `{
                         "name": "q",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Maximum number of results to return (default: 100)",
+                        "name": "limit",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -546,20 +558,20 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse"
+                                "$ref": "#/definitions/UserResponse"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -1057,7 +1069,17 @@ const docTemplate = `{
                 }
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "description": "Operations related to organizations",
+            "name": "organizations"
+        },
+        {
+            "description": "Operations related to users",
+            "name": "users"
+        }
+    ]
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
