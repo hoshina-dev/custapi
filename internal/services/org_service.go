@@ -77,6 +77,6 @@ func (s *organizationService) DeleteOrganization(ctx context.Context, id uuid.UU
 }
 
 // SearchOrganizations searches organizations by name
-func (s *organizationService) SearchOrganizations(ctx context.Context, query string) ([]models.Organization, error) {
-	return s.orgRepo.Search(ctx, query)
+func (s *organizationService) SearchOrganizations(ctx context.Context, query string, limit int) ([]models.Organization, error) {
+	return s.orgRepo.Search(ctx, query, limit)
 }

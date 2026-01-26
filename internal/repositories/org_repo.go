@@ -85,12 +85,17 @@ func (r *organizationRepository) Delete(ctx context.Context, id uuid.UUID) error
 }
 
 // Search searches organizations by name using ILIKE
-func (r *organizationRepository) Search(ctx context.Context, query string) ([]models.Organization, error) {
+func (r *organizationRepository) Search(ctx context.Context, query string, limit int) ([]models.Organization, error) {
 	var orgs []models.Organization
 	searchPattern := "%" + query + "%"
-	err := r.db.WithContext(ctx).
+	db := r.db.WithContext(ctx).
 		Where("name ILIKE ?", searchPattern).
-		Order("name ASC").
-		Find(&orgs).Error
+		Order("name ASC")
+
+	if limit > 0 {
+		db = db.Limit(limit)
+	}
+
+	err := db.Find(&orgs).Error
 	return orgs, err
 }

@@ -225,6 +225,7 @@ func (h *UserHandler) DeleteUser(c *fiber.Ctx) error {
 //	@Accept			json
 //	@Produce		json
 //	@Param			q		query		string	true	"Search query"
+//	@Param			limit	query		int		false	"Maximum number of results to return (default: 100)"
 //	@Success		200		{array}		models.UserResponse
 //	@Failure		400		{object}	models.ErrorResponse
 //	@Failure		500		{object}	models.ErrorResponse
@@ -235,7 +236,13 @@ func (h *UserHandler) SearchUsers(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "query parameter 'q' is required"})
 	}
 
-	users, err := h.userService.SearchUsers(c.Context(), query)
+	// Parse limit parameter with default of 100
+	limit := c.QueryInt("limit", 100)
+	if limit < 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "limit must be non-negative"})
+	}
+
+	users, err := h.userService.SearchUsers(c.Context(), query, limit)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}

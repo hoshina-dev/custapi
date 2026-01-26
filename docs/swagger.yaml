@@ -464,6 +464,37 @@ paths:
       summary: Get all organization coordinates
       tags:
       - organizations
+  /organizations/search:
+    get:
+      consumes:
+      - application/json
+      description: Search organizations by name using ILIKE query
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.OrganizationResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Search organizations
+      tags:
+      - organizations
   /users:
     get:
       consumes:
@@ -653,6 +684,37 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
       summary: Get users by organization
+      tags:
+      - users
+  /users/search:
+    get:
+      consumes:
+      - application/json
+      description: Search users by name or email using ILIKE query
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.UserResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.ErrorResponse'
+      summary: Search users
       tags:
       - users
 swagger: "2.0"

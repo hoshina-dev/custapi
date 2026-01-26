@@ -247,6 +247,7 @@ func (h *OrgHandler) GetByIDs(c *fiber.Ctx) error {
 //	@Accept			json
 //	@Produce		json
 //	@Param			q		query		string	true	"Search query"
+//	@Param			limit	query		int		false	"Maximum number of results to return (default: 100)"
 //	@Success		200		{array}		models.OrganizationResponse
 //	@Failure		400		{object}	models.ErrorResponse
 //	@Failure		500		{object}	models.ErrorResponse
@@ -257,7 +258,13 @@ func (h *OrgHandler) SearchOrganizations(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "query parameter 'q' is required"})
 	}
 
-	orgs, err := h.orgService.SearchOrganizations(c.Context(), query)
+	// Parse limit parameter with default of 100
+	limit := c.QueryInt("limit", 100)
+	if limit < 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "limit must be non-negative"})
+	}
+
+	orgs, err := h.orgService.SearchOrganizations(c.Context(), query, limit)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}

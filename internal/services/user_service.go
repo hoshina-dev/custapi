@@ -100,6 +100,6 @@ func (s *userService) Delete(ctx context.Context, id uuid.UUID) error {
 }
 
 // SearchUsers searches users by name or email
-func (s *userService) SearchUsers(ctx context.Context, query string) ([]models.User, error) {
-	return s.userRepo.Search(ctx, query)
+func (s *userService) SearchUsers(ctx context.Context, query string, limit int) ([]models.User, error) {
+	return s.userRepo.Search(ctx, query, limit)
 }
