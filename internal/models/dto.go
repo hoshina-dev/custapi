@@ -8,18 +8,18 @@ import (
 
 // UserResponse is the DTO for user responses
 type UserResponse struct {
-	ID                 uuid.UUID `json:"id" example:"550e8400-e29b-41d4-a716-446655440000"`
-	Email              string    `json:"email" example:"user@example.com"`
-	Name               string    `json:"name" example:"John Doe"`
-	OrganizationID     uuid.UUID `json:"organization_id" example:"550e8400-e29b-41d4-a716-446655440001"`
-	IsAdmin            bool      `json:"is_admin" example:"true"`
+	ID                 uuid.UUID `json:"id" validate:"required" example:"550e8400-e29b-41d4-a716-446655440000"`
+	Email              string    `json:"email" validate:"required" example:"user@example.com"`
+	Name               string    `json:"name" validate:"required" example:"John Doe"`
+	OrganizationID     uuid.UUID `json:"organization_id" validate:"required" example:"550e8400-e29b-41d4-a716-446655440001"`
+	IsAdmin            bool      `json:"is_admin" validate:"required" example:"true"`
 	PhoneNumber        *string   `json:"phone_number,omitempty" example:"+1234567890"`
 	SocialMedia        *string   `json:"social_media,omitempty" example:"@john on Twitter, linkedin.com/in/john"`
 	Description        *string   `json:"description,omitempty" example:"Senior researcher specializing in quantum computing"`
 	AvatarURL          *string   `json:"avatar_url,omitempty" example:"https://example.com/avatar.jpg"`
-	ResearchCategories []string  `json:"research_categories" example:"QuantumComputing,Qiskit,Cryogenics"`
-	CreatedAt          time.Time `json:"created_at" example:"2026-01-01T12:00:00.00000+07:00"`
-	UpdatedAt          time.Time `json:"updated_at" example:"2026-01-01T12:00:00.00000+07:00"`
+	ResearchCategories []string  `json:"research_categories" validate:"required" example:"QuantumComputing,Qiskit,Cryogenics"`
+	CreatedAt          time.Time `json:"created_at" validate:"required" example:"2026-01-01T12:00:00.00000+07:00"`
+	UpdatedAt          time.Time `json:"updated_at" validate:"required" example:"2026-01-01T12:00:00.00000+07:00"`
 } //	@name	UserResponse
 
 // CreateUserRequest is the DTO for user creation
@@ -51,15 +51,15 @@ type UpdateUserRequest struct {
 
 // OrganizationResponse is the DTO for organization responses
 type OrganizationResponse struct {
-	ID          uuid.UUID `json:"id" example:"550e8400-e29b-41d4-a716-446655440001"`
-	Name        string    `json:"name" example:"Acme Corp"`
-	Latitude    float64   `json:"lat" example:"13.7888"`
-	Longitude   float64   `json:"lng" example:"100.5322"`
+	ID          uuid.UUID `json:"id" validate:"required" example:"550e8400-e29b-41d4-a716-446655440001"`
+	Name        string    `json:"name" validate:"required" example:"Acme Corp"`
+	Latitude    float64   `json:"lat" validate:"required" example:"13.7888"`
+	Longitude   float64   `json:"lng" validate:"required" example:"100.5322"`
 	Address     *string   `json:"address,omitempty" example:"254 St, Bangkok, TH"`
 	Description *string   `json:"description,omitempty" example:"Higher education institution"`
-	ImageUrls   []string  `json:"image_urls" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
-	CreatedAt   time.Time `json:"created_at" example:"2026-01-01T12:00:00.00000+07:00"`
-	UpdatedAt   time.Time `json:"updated_at" example:"2026-01-01T12:00:00.00000+07:00"`
+	ImageUrls   []string  `json:"image_urls" validate:"required" example:"https://example.com/example-1.jpg,https://example.com/example-2.jpg"`
+	CreatedAt   time.Time `json:"created_at" validate:"required" example:"2026-01-01T12:00:00.00000+07:00"`
+	UpdatedAt   time.Time `json:"updated_at" validate:"required" example:"2026-01-01T12:00:00.00000+07:00"`
 } //	@name	OrganizationResponse
 
 // CreateOrganizationRequest is the DTO for organization creation
@@ -82,9 +82,9 @@ type UpdateOrganizationRequest struct {
 } //	@name	UpdateOrganizationRequest
 
 type OrganizationCoord struct {
-	ID        uuid.UUID `json:"id" example:"550e8400-e29b-41d4-a716-446655440001"`
-	Latitude  float64   `json:"lat" example:"13.7388"`
-	Longitude float64   `json:"lng" example:"100.5322"`
+	ID        uuid.UUID `json:"id" validate:"required" example:"550e8400-e29b-41d4-a716-446655440001"`
+	Latitude  float64   `json:"lat" validate:"required" example:"13.7388"`
+	Longitude float64   `json:"lng" validate:"required" example:"100.5322"`
 } //	@name	OrganizationCoord
 
 type GetOrganizationsByIDsRequest struct {
@@ -93,5 +93,5 @@ type GetOrganizationsByIDsRequest struct {
 
 // ErrorResponse is the DTO for error responses
 type ErrorResponse struct {
-	Error string `json:"error" example:"error message"`
+	Error string `json:"error" validate:"required" example:"error message"`
 } //	@name	ErrorResponse
