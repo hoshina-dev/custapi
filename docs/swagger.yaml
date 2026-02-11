@@ -78,6 +78,8 @@ definitions:
       error:
         example: error message
         type: string
+    required:
+    - error
     type: object
   GetOrganizationsByIDsRequest:
     properties:
@@ -102,6 +104,10 @@ definitions:
       lng:
         example: 100.5322
         type: number
+    required:
+    - id
+    - lat
+    - lng
     type: object
   OrganizationResponse:
     properties:
@@ -136,6 +142,14 @@ definitions:
       updated_at:
         example: "2026-01-01T12:00:00.00000+07:00"
         type: string
+    required:
+    - created_at
+    - id
+    - image_urls
+    - lat
+    - lng
+    - name
+    - updated_at
     type: object
   UpdateOrganizationRequest:
     properties:
@@ -244,6 +258,15 @@ definitions:
       updated_at:
         example: "2026-01-01T12:00:00.00000+07:00"
         type: string
+    required:
+    - created_at
+    - email
+    - id
+    - is_admin
+    - name
+    - organization_id
+    - research_categories
+    - updated_at
     type: object
 info:
   contact: {}

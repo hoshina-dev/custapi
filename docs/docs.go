@@ -832,6 +832,9 @@ const docTemplate = `{
         },
         "ErrorResponse": {
             "type": "object",
+            "required": [
+                "error"
+            ],
             "properties": {
                 "error": {
                     "type": "string",
@@ -859,6 +862,11 @@ const docTemplate = `{
         },
         "OrganizationCoord": {
             "type": "object",
+            "required": [
+                "id",
+                "lat",
+                "lng"
+            ],
             "properties": {
                 "id": {
                     "type": "string",
@@ -876,6 +884,15 @@ const docTemplate = `{
         },
         "OrganizationResponse": {
             "type": "object",
+            "required": [
+                "created_at",
+                "id",
+                "image_urls",
+                "lat",
+                "lng",
+                "name",
+                "updated_at"
+            ],
             "properties": {
                 "address": {
                     "type": "string",
@@ -1011,6 +1028,16 @@ const docTemplate = `{
         },
         "UserResponse": {
             "type": "object",
+            "required": [
+                "created_at",
+                "email",
+                "id",
+                "is_admin",
+                "name",
+                "organization_id",
+                "research_categories",
+                "updated_at"
+            ],
             "properties": {
                 "avatar_url": {
                     "type": "string",
