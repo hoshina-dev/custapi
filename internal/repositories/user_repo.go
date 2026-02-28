@@ -81,10 +81,11 @@ func (r *userRepository) Delete(ctx context.Context, id uuid.UUID) error {
 // Search searches users by name or email using ILIKE
 func (r *userRepository) Search(ctx context.Context, query string, limit int) ([]models.User, error) {
 	var users []models.User
-	searchPattern := "%" + query + "%"
+	escaped := escapeLike(query)
+	searchPattern := "%" + escaped + "%"
 	db := r.db.WithContext(ctx).
 		Preload("Organization").
-		Where("name ILIKE ? OR email ILIKE ?", searchPattern, searchPattern).
+		Where("name ILIKE ? ESCAPE '\\' OR email ILIKE ? ESCAPE '\\'", searchPattern, searchPattern).
 		Order("name ASC")
 
 	if limit > 0 {
