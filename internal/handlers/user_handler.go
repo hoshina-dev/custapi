@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"net/mail"
 	"net/url"
 
 	"github.com/go-playground/validator/v10"
@@ -124,6 +125,7 @@ func (h *UserHandler) GetUser(c *fiber.Ctx) error {
 //	@Produce		json
 //	@Param			email	path		string	true	"User email address"
 //	@Success		200		{object}	models.UserDetailResponse
+//	@Failure		400		{object}	models.ErrorResponse
 //	@Failure		404		{object}	models.ErrorResponse
 //	@Failure		500		{object}	models.ErrorResponse
 //	@Router			/users/email/{email} [get]
@@ -131,6 +133,10 @@ func (h *UserHandler) GetUserByEmail(c *fiber.Ctx) error {
 	email, err := url.PathUnescape(c.Params("email"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid email parameter"})
+	}
+
+	if _, err := mail.ParseAddress(email); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid email format"})
 	}
 
 	user, err := h.userService.GetUserByEmail(c.Context(), email)

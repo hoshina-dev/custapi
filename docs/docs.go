@@ -506,6 +506,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/UserDetailResponse"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
