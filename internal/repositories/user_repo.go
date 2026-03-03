@@ -14,6 +14,7 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, user *models.User) error
 	FindByID(ctx context.Context, id uuid.UUID) (*models.User, error)
+	FindByEmail(ctx context.Context, email string) (*models.User, error)
 	FindAll(ctx context.Context) ([]models.User, error)
 	FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
 	Update(ctx context.Context, user *models.User) error
@@ -40,6 +41,19 @@ func (r *userRepository) Create(ctx context.Context, user *models.User) error {
 func (r *userRepository) FindByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	var user models.User
 	err := r.db.WithContext(ctx).Preload("Organizations.Organization").First(&user, id).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+// FindByEmail finds a user by email address
+func (r *userRepository) FindByEmail(ctx context.Context, email string) (*models.User, error) {
+	var user models.User
+	err := r.db.WithContext(ctx).Where("email = ?", email).First(&user).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}

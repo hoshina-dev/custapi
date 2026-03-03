@@ -105,3 +105,21 @@ func (user *User) ToResponse() UserResponse {
 		UpdatedAt:          user.UpdatedAt,
 	}
 }
+
+func (user *User) ToDetailResponse() UserDetailResponse {
+	return UserDetailResponse{
+		ID:                 user.ID,
+		Email:              user.Email,
+		Name:               user.Name,
+		OrganizationID:     user.OrganizationID,
+		Password:           user.Password,
+		IsAdmin:            user.IsAdmin,
+		PhoneNumber:        user.PhoneNumber,
+		SocialMedia:        user.SocialMedia,
+		Description:        user.Description,
+		AvatarURL:          user.AvatarURL,
+		ResearchCategories: user.ResearchCategories,
+		CreatedAt:          user.CreatedAt,
+		UpdatedAt:          user.UpdatedAt,
+	}
+}
