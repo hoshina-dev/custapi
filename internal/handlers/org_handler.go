@@ -319,8 +319,8 @@ func (h *OrgHandler) GetMembers(c *fiber.Ctx) error {
 //	@Tags			organizations
 //	@Accept			json
 //	@Produce		json
-//	@Param			id		path		string					true	"Organization ID"
-//	@Param			req		body		models.AddMemberRequest	true	"Member to add"
+//	@Param			id	path	string					true	"Organization ID"
+//	@Param			req	body	models.AddMemberRequest	true	"Member to add"
 //	@Success		201
 //	@Failure		400	{object}	models.ErrorResponse
 //	@Failure		404	{object}	models.ErrorResponse
@@ -353,17 +353,17 @@ func (h *OrgHandler) AddMember(c *fiber.Ctx) error {
 
 // RemoveMember godoc
 //
-//	@Summary		Remove a member from an organization
-//	@Tags			organizations
-//	@Accept			json
-//	@Produce		json
-//	@Param			id			path		string	true	"Organization ID"
-//	@Param			user_id		path		string	true	"User ID"
-//	@Success		204
-//	@Failure		400	{object}	models.ErrorResponse
-//	@Failure		404	{object}	models.ErrorResponse
-//	@Failure		500	{object}	models.ErrorResponse
-//	@Router			/organizations/{id}/members/{user_id} [delete]
+//	@Summary	Remove a member from an organization
+//	@Tags		organizations
+//	@Accept		json
+//	@Produce	json
+//	@Param		id		path	string	true	"Organization ID"
+//	@Param		user_id	path	string	true	"User ID"
+//	@Success	204
+//	@Failure	400	{object}	models.ErrorResponse
+//	@Failure	404	{object}	models.ErrorResponse
+//	@Failure	500	{object}	models.ErrorResponse
+//	@Router		/organizations/{id}/members/{user_id} [delete]
 func (h *OrgHandler) RemoveMember(c *fiber.Ctx) error {
 	orgID, err := uuid.Parse(c.Params("id"))
 	if err != nil {
@@ -386,18 +386,18 @@ func (h *OrgHandler) RemoveMember(c *fiber.Ctx) error {
 
 // SetAdmin godoc
 //
-//	@Summary		Update a member's admin role
-//	@Tags			organizations
-//	@Accept			json
-//	@Produce		json
-//	@Param			id			path		string					true	"Organization ID"
-//	@Param			user_id		path		string					true	"User ID"
-//	@Param			req			body		models.SetAdminRequest	true	"Admin flag"
-//	@Success		204
-//	@Failure		400	{object}	models.ErrorResponse
-//	@Failure		404	{object}	models.ErrorResponse
-//	@Failure		500	{object}	models.ErrorResponse
-//	@Router			/organizations/{id}/members/{user_id} [patch]
+//	@Summary	Update a member's admin role
+//	@Tags		organizations
+//	@Accept		json
+//	@Produce	json
+//	@Param		id		path	string					true	"Organization ID"
+//	@Param		user_id	path	string					true	"User ID"
+//	@Param		req		body	models.SetAdminRequest	true	"Admin flag"
+//	@Success	204
+//	@Failure	400	{object}	models.ErrorResponse
+//	@Failure	404	{object}	models.ErrorResponse
+//	@Failure	500	{object}	models.ErrorResponse
+//	@Router		/organizations/{id}/members/{user_id} [patch]
 func (h *OrgHandler) SetAdmin(c *fiber.Ctx) error {
 	orgID, err := uuid.Parse(c.Params("id"))
 	if err != nil {
