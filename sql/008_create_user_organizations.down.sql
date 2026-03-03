@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS user_organization;
+DROP TABLE IF EXISTS user_organizations;

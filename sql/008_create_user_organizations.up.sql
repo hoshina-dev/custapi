@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS user_organization (
+CREATE TABLE IF NOT EXISTS user_organizations (
     user_id         UUID      NOT NULL,
     organization_id UUID      NOT NULL,
     is_admin        BOOLEAN   NOT NULL DEFAULT FALSE,
@@ -19,9 +19,9 @@ CREATE TABLE IF NOT EXISTS user_organization (
 
 -- Index organization id
 CREATE INDEX IF NOT EXISTS idx_uo_org_id
-ON user_organization(organization_id);
+ON user_organizations(organization_id);
 
 -- Partial Index for finding admin in an organization, could be useful and size is small cuz partial only admin
 CREATE INDEX IF NOT EXISTS idx_uo_org_admin
-ON user_organization(organization_id)
+ON user_organizations(organization_id)
 WHERE is_admin = TRUE;

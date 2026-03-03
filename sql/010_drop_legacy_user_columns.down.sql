@@ -1,5 +1,5 @@
 ALTER TABLE users
-    ADD COLUMN IF NOT EXISTS organization_id UUID;
+    ADD COLUMN IF NOT EXISTS organization_id UUID,
     ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT FALSE;
 
 UPDATE users u
