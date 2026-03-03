@@ -49,9 +49,6 @@ func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 
 	user, err := h.userService.CreateUser(c.Context(), req)
 	if err != nil {
-		if err.Error() == "organization not found" {
-			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
-		}
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: "failed to create user"})
 	}
 

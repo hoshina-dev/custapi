@@ -276,3 +276,149 @@ func (h *OrgHandler) SearchOrganizations(c *fiber.Ctx) error {
 
 	return c.JSON(response)
 }
+
+// GetMembers godoc
+//
+//	@Summary		Get members of an organization
+//	@Description	Get all users that belong to an organization
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Organization ID"
+//	@Success		200	{array}		models.UserResponse
+//	@Failure		400	{object}	models.ErrorResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/organizations/{id}/members [get]
+func (h *OrgHandler) GetMembers(c *fiber.Ctx) error {
+	orgID, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
+	}
+
+	users, err := h.orgService.ListMembers(c.Context(), orgID)
+	if err != nil {
+		if err.Error() == "organization not found" {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	response := make([]models.UserResponse, len(users))
+	for i, u := range users {
+		response[i] = u.ToResponse()
+	}
+
+	return c.JSON(response)
+}
+
+// AddMember godoc
+//
+//	@Summary		Add a member to an organization
+//	@Description	Add an existing user to an organization with an optional admin role
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string					true	"Organization ID"
+//	@Param			req		body		models.AddMemberRequest	true	"Member to add"
+//	@Success		201
+//	@Failure		400	{object}	models.ErrorResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Failure		422	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/organizations/{id}/members [post]
+func (h *OrgHandler) AddMember(c *fiber.Ctx) error {
+	orgID, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
+	}
+
+	req := new(models.AddMemberRequest)
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid json payload"})
+	}
+	if err := h.validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	if err := h.orgService.AddMember(c.Context(), orgID, req); err != nil {
+		if err.Error() == "organization not found" {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	return c.SendStatus(fiber.StatusCreated)
+}
+
+// RemoveMember godoc
+//
+//	@Summary		Remove a member from an organization
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Param			id			path		string	true	"Organization ID"
+//	@Param			user_id		path		string	true	"User ID"
+//	@Success		204
+//	@Failure		400	{object}	models.ErrorResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/organizations/{id}/members/{user_id} [delete]
+func (h *OrgHandler) RemoveMember(c *fiber.Ctx) error {
+	orgID, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
+	}
+	userID, err := uuid.Parse(c.Params("user_id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
+	}
+
+	if err := h.orgService.RemoveMember(c.Context(), orgID, userID); err != nil {
+		if err.Error() == "member not found" {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}
+
+// SetAdmin godoc
+//
+//	@Summary		Update a member's admin role
+//	@Tags			organizations
+//	@Accept			json
+//	@Produce		json
+//	@Param			id			path		string					true	"Organization ID"
+//	@Param			user_id		path		string					true	"User ID"
+//	@Param			req			body		models.SetAdminRequest	true	"Admin flag"
+//	@Success		204
+//	@Failure		400	{object}	models.ErrorResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/organizations/{id}/members/{user_id} [patch]
+func (h *OrgHandler) SetAdmin(c *fiber.Ctx) error {
+	orgID, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
+	}
+	userID, err := uuid.Parse(c.Params("user_id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
+	}
+
+	req := new(models.SetAdminRequest)
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid json payload"})
+	}
+
+	if err := h.orgService.SetAdmin(c.Context(), orgID, userID, req.IsAdmin); err != nil {
+		if err.Error() == "member not found" {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}

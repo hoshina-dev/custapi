@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"errors"
 
 	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
@@ -23,28 +22,17 @@ type UserService interface {
 // userService is the concrete implementation of UserService
 type userService struct {
 	userRepo repositories.UserRepository
-	orgRepo  repositories.OrganizationRepository
 }
 
 // NewUserService creates a new user service
-func NewUserService(userRepo repositories.UserRepository, orgRepo repositories.OrganizationRepository) UserService {
+func NewUserService(userRepo repositories.UserRepository) UserService {
 	return &userService{
 		userRepo: userRepo,
-		orgRepo:  orgRepo,
 	}
 }
 
 // CreateUser creates a new user
 func (s *userService) CreateUser(ctx context.Context, req *models.CreateUserRequest) (*models.User, error) {
-	// Verify organization exists
-	org, err := s.orgRepo.FindByID(ctx, req.OrganizationID)
-	if err != nil {
-		return nil, err
-	}
-	if org == nil {
-		return nil, errors.New("organization not found")
-	}
-
 	user, err := req.ToDomain()
 	if err != nil {
 		return nil, err
@@ -69,15 +57,6 @@ func (s *userService) ListUsers(ctx context.Context) ([]models.User, error) {
 
 // ListUsersByOrganization retrieves users by organization
 func (s *userService) ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.User, error) {
-	// Verify organization exists
-	org, err := s.orgRepo.FindByID(ctx, orgID)
-	if err != nil {
-		return nil, err
-	}
-	if org == nil {
-		return nil, errors.New("organization not found")
-	}
-
 	return s.userRepo.FindByOrganizationID(ctx, orgID)
 }
 

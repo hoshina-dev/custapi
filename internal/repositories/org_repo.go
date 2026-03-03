@@ -20,6 +20,10 @@ type OrganizationRepository interface {
 	Update(ctx context.Context, org *models.Organization) error
 	Delete(ctx context.Context, id uuid.UUID) error
 	Search(ctx context.Context, query string, limit int) ([]models.Organization, error)
+	FindMembers(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
+	AddMember(ctx context.Context, m *models.UserOrganization) error
+	RemoveMember(ctx context.Context, orgID, userID uuid.UUID) error
+	SetAdmin(ctx context.Context, orgID, userID uuid.UUID, isAdmin bool) error
 }
 
 // organizationRepository is the concrete implementation of OrganizationRepository
@@ -99,4 +103,50 @@ func (r *organizationRepository) Search(ctx context.Context, query string, limit
 
 	err := db.Find(&orgs).Error
 	return orgs, err
+}
+
+// FindMembers returns all non-deleted users belonging to an organization
+func (r *organizationRepository) FindMembers(ctx context.Context, orgID uuid.UUID) ([]models.User, error) {
+	var users []models.User
+	err := r.db.WithContext(ctx).
+		Joins("JOIN user_organizations ON user_organizations.user_id = users.id").
+		Where("user_organizations.organization_id = ?", orgID).
+		Preload("Organizations.Organization").
+		Order("users.name ASC").
+		Find(&users).Error
+	return users, err
+}
+
+// AddMember inserts a row into user_organizations
+func (r *organizationRepository) AddMember(ctx context.Context, m *models.UserOrganization) error {
+	return r.db.WithContext(ctx).Create(m).Error
+}
+
+// RemoveMember deletes a user_organizations row (hard delete — no deleted_at on junction table)
+func (r *organizationRepository) RemoveMember(ctx context.Context, orgID, userID uuid.UUID) error {
+	res := r.db.WithContext(ctx).
+		Where("organization_id = ? AND user_id = ?", orgID, userID).
+		Delete(&models.UserOrganization{})
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected == 0 {
+		return errors.New("member not found")
+	}
+	return nil
+}
+
+// SetAdmin updates the is_admin flag for an existing membership
+func (r *organizationRepository) SetAdmin(ctx context.Context, orgID, userID uuid.UUID, isAdmin bool) error {
+	res := r.db.WithContext(ctx).
+		Model(&models.UserOrganization{}).
+		Where("organization_id = ? AND user_id = ?", orgID, userID).
+		Update("is_admin", isAdmin)
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected == 0 {
+		return errors.New("member not found")
+	}
+	return nil
 }

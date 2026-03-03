@@ -52,7 +52,7 @@ func main() {
 	orgRepo := repositories.NewOrganizationRepository(db)
 
 	// Initialize services
-	userService := services.NewUserService(userRepo, orgRepo)
+	userService := services.NewUserService(userRepo)
 	orgService := services.NewOrganizationService(orgRepo)
 
 	// Initialize handlers
