@@ -278,6 +278,18 @@ definitions:
     - research_categories
     - updated_at
     type: object
+  UserMembershipResponse:
+    properties:
+      is_admin:
+        example: false
+        type: boolean
+      organization_id:
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+      organization_name:
+        example: Acme Corp
+        type: string
+    type: object
   UserResponse:
     properties:
       avatar_url:

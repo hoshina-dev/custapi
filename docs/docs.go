@@ -1394,6 +1394,23 @@ const docTemplate = `{
                 }
             }
         },
+        "UserMembershipResponse": {
+            "type": "object",
+            "properties": {
+                "is_admin": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "organization_id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "organization_name": {
+                    "type": "string",
+                    "example": "Acme Corp"
+                }
+            }
+        },
         "UserResponse": {
             "type": "object",
             "required": [
