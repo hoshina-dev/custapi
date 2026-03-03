@@ -33,11 +33,12 @@ func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *
 		user := v1.Group("/users")
 		user.Get("/", userHandler.GetUsers)
 		user.Get("/search", userHandler.SearchUsers)
-		user.Get("/:id", userHandler.GetUser)
+		user.Get("/id/:id", userHandler.GetUser)
+		user.Get("/email/:email", userHandler.GetUserByEmail)
 		user.Get("/organization/:org_id", userHandler.GetUsersByOrganization)
 		user.Post("/", userHandler.CreateUser)
-		user.Patch("/:id", userHandler.UpdateUser)
-		user.Delete("/:id", userHandler.DeleteUser)
+		user.Patch("/id/:id", userHandler.UpdateUser)
+		user.Delete("/id/:id", userHandler.DeleteUser)
 
 		// Organizations routes
 		org := v1.Group("/organizations")

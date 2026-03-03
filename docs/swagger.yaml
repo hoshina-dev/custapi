@@ -525,7 +525,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a list of all users
+      description: Returns a list of all users
       produces:
       - application/json
       responses:
@@ -580,7 +580,36 @@ paths:
       summary: Create a new user
       tags:
       - users
-  /users/{id}:
+  /users/email/{email}:
+    get:
+      consumes:
+      - application/json
+      description: Get a single user by their email address
+      parameters:
+      - description: User email address
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UserResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Get a user by email
+      tags:
+      - users
+  /users/id/{id}:
     delete:
       consumes:
       - application/json
@@ -614,9 +643,9 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get a single user by their ID
+      description: Get a single user by their UUID
       parameters:
-      - description: User ID
+      - description: User ID (UUID)
         in: path
         name: id
         required: true
@@ -628,6 +657,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
