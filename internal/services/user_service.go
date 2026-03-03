@@ -13,6 +13,7 @@ import (
 type UserService interface {
 	CreateUser(ctx context.Context, req *models.CreateUserRequest) (*models.User, error)
 	GetUser(ctx context.Context, id uuid.UUID) (*models.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	ListUsers(ctx context.Context) ([]models.User, error)
 	ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
 	Update(ctx context.Context, id uuid.UUID, req *models.UpdateUserRequest) (*models.User, error)
@@ -60,6 +61,11 @@ func (s *userService) CreateUser(ctx context.Context, req *models.CreateUserRequ
 // GetUser retrieves a user by ID
 func (s *userService) GetUser(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	return s.userRepo.FindByID(ctx, id)
+}
+
+// GetUserByEmail retrieves a user by email address
+func (s *userService) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	return s.userRepo.FindByEmail(ctx, email)
 }
 
 // ListUsers retrieves all users

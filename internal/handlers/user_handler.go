@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"net/mail"
+	"net/url"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -61,7 +64,7 @@ func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 // GetUsers godoc
 //
 //	@Summary		Get all users
-//	@Description	Get a list of all users
+//	@Description	Returns a list of all users
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
@@ -85,15 +88,16 @@ func (h *UserHandler) GetUsers(c *fiber.Ctx) error {
 // GetUser godoc
 //
 //	@Summary		Get a user by ID
-//	@Description	Get a single user by their ID
+//	@Description	Get a single user by their UUID
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string	true	"User ID"
-//	@Success		200	{object}	models.UserResponse
+//	@Param			id	path		string	true	"User ID (UUID)"
+//	@Success		200	{object}	models.UserDetailResponse
+//	@Failure		400	{object}	models.ErrorResponse
 //	@Failure		404	{object}	models.ErrorResponse
 //	@Failure		500	{object}	models.ErrorResponse
-//	@Router			/users/{id} [get]
+//	@Router			/users/id/{id} [get]
 func (h *UserHandler) GetUser(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
@@ -109,7 +113,42 @@ func (h *UserHandler) GetUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: "user not found"})
 	}
 
-	return c.JSON(user.ToResponse())
+	return c.JSON(user.ToDetailResponse())
+}
+
+// GetUserByEmail godoc
+//
+//	@Summary		Get a user by email
+//	@Description	Get a single user by their email address
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			email	path		string	true	"User email address"
+//	@Success		200		{object}	models.UserDetailResponse
+//	@Failure		400		{object}	models.ErrorResponse
+//	@Failure		404		{object}	models.ErrorResponse
+//	@Failure		500		{object}	models.ErrorResponse
+//	@Router			/users/email/{email} [get]
+func (h *UserHandler) GetUserByEmail(c *fiber.Ctx) error {
+	email, err := url.PathUnescape(c.Params("email"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid email parameter"})
+	}
+
+	if _, err := mail.ParseAddress(email); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid email format"})
+	}
+
+	user, err := h.userService.GetUserByEmail(c.Context(), email)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	if user == nil {
+		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: "user not found"})
+	}
+
+	return c.JSON(user.ToDetailResponse())
 }
 
 // GetUsersByOrganization godoc
@@ -160,7 +199,7 @@ func (h *UserHandler) GetUsersByOrganization(c *fiber.Ctx) error {
 //	@Failure		404		{object}	models.ErrorResponse
 //	@Failure		422		{object}	models.ErrorResponse
 //	@Failure		500		{object}	models.ErrorResponse
-//	@Router			/users/{id} [patch]
+//	@Router			/users/id/{id} [patch]
 func (h *UserHandler) UpdateUser(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
@@ -200,7 +239,7 @@ func (h *UserHandler) UpdateUser(c *fiber.Ctx) error {
 //	@Failure		400	{object}	models.ErrorResponse
 //	@Failure		404	{object}	models.ErrorResponse
 //	@Failure		500	{object}	models.ErrorResponse
-//	@Router			/users/{id} [delete]
+//	@Router			/users/id/{id} [delete]
 func (h *UserHandler) DeleteUser(c *fiber.Ctx) error {
 	id, err := uuid.Parse(c.Params("id"))
 	if err != nil {
