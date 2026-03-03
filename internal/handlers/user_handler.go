@@ -92,7 +92,7 @@ func (h *UserHandler) GetUsers(c *fiber.Ctx) error {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		string	true	"User ID (UUID)"
-//	@Success		200	{object}	models.UserResponse
+//	@Success		200	{object}	models.UserDetailResponse
 //	@Failure		400	{object}	models.ErrorResponse
 //	@Failure		404	{object}	models.ErrorResponse
 //	@Failure		500	{object}	models.ErrorResponse
@@ -112,7 +112,7 @@ func (h *UserHandler) GetUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: "user not found"})
 	}
 
-	return c.JSON(user.ToResponse())
+	return c.JSON(user.ToDetailResponse())
 }
 
 // GetUserByEmail godoc
@@ -123,7 +123,7 @@ func (h *UserHandler) GetUser(c *fiber.Ctx) error {
 //	@Accept			json
 //	@Produce		json
 //	@Param			email	path		string	true	"User email address"
-//	@Success		200		{object}	models.UserResponse
+//	@Success		200		{object}	models.UserDetailResponse
 //	@Failure		404		{object}	models.ErrorResponse
 //	@Failure		500		{object}	models.ErrorResponse
 //	@Router			/users/email/{email} [get]
@@ -142,7 +142,7 @@ func (h *UserHandler) GetUserByEmail(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: "user not found"})
 	}
 
-	return c.JSON(user.ToResponse())
+	return c.JSON(user.ToDetailResponse())
 }
 
 // GetUsersByOrganization godoc

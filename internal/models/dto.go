@@ -22,7 +22,22 @@ type UserResponse struct {
 	UpdatedAt          time.Time `json:"updated_at" validate:"required" example:"2026-01-01T12:00:00.00000+07:00"`
 } //	@name	UserResponse
 
-// CreateUserRequest is the DTO for user creation
+// UserDetailResponse is the DTO for single user responses, includes password
+type UserDetailResponse struct {
+	ID                 uuid.UUID `json:"id" validate:"required" example:"550e8400-e29b-41d4-a716-446655440000"`
+	Email              string    `json:"email" validate:"required" example:"user@example.com"`
+	Name               string    `json:"name" validate:"required" example:"John Doe"`
+	OrganizationID     uuid.UUID `json:"organization_id" validate:"required" example:"550e8400-e29b-41d4-a716-446655440001"`
+	Password           string    `json:"password" validate:"required" example:"$2a$10$hashedpassword"`
+	IsAdmin            bool      `json:"is_admin" validate:"required" example:"true"`
+	PhoneNumber        *string   `json:"phone_number,omitempty" example:"+1234567890"`
+	SocialMedia        *string   `json:"social_media,omitempty" example:"@john on Twitter, linkedin.com/in/john"`
+	Description        *string   `json:"description,omitempty" example:"Senior researcher specializing in quantum computing"`
+	AvatarURL          *string   `json:"avatar_url,omitempty" example:"https://example.com/avatar.jpg"`
+	ResearchCategories []string  `json:"research_categories" validate:"required" example:"QuantumComputing,Qiskit,Cryogenics"`
+	CreatedAt          time.Time `json:"created_at" validate:"required" example:"2026-01-01T12:00:00.00000+07:00"`
+	UpdatedAt          time.Time `json:"updated_at" validate:"required" example:"2026-01-01T12:00:00.00000+07:00"`
+} //	@name	UserDetailResponse
 type CreateUserRequest struct {
 	Email              string    `json:"email" validate:"required,email" example:"user@example.com"`
 	Name               string    `json:"name" validate:"required,max=255" example:"John Doe"`
