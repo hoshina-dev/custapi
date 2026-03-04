@@ -107,18 +107,25 @@ func (user *User) ToResponse() UserResponse {
 }
 
 func (user *User) ToDetailResponse() UserDetailResponse {
+	orgs := make([]UserMembershipResponse, 0, len(user.Organizations))
+	for _, m := range user.Organizations {
+		orgs = append(orgs, UserMembershipResponse{
+			OrganizationID:   m.OrganizationID,
+			OrganizationName: m.Organization.Name,
+			IsAdmin:          m.IsAdmin,
+		})
+	}
 	return UserDetailResponse{
 		ID:                 user.ID,
 		Email:              user.Email,
 		Name:               user.Name,
-		OrganizationID:     user.OrganizationID,
 		Password:           user.Password,
-		IsAdmin:            user.IsAdmin,
 		PhoneNumber:        user.PhoneNumber,
 		SocialMedia:        user.SocialMedia,
 		Description:        user.Description,
 		AvatarURL:          user.AvatarURL,
 		ResearchCategories: user.ResearchCategories,
+		Organizations:      orgs,
 		CreatedAt:          user.CreatedAt,
 		UpdatedAt:          user.UpdatedAt,
 	}

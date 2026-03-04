@@ -1325,9 +1325,7 @@ const docTemplate = `{
                 "created_at",
                 "email",
                 "id",
-                "is_admin",
                 "name",
-                "organization_id",
                 "password",
                 "research_categories",
                 "updated_at"
@@ -1353,17 +1351,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
-                "is_admin": {
-                    "type": "boolean",
-                    "example": true
-                },
                 "name": {
                     "type": "string",
                     "example": "John Doe"
                 },
-                "organization_id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                "organizations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserMembershipResponse"
+                    }
                 },
                 "password": {
                     "type": "string",
