@@ -12,32 +12,30 @@ func seedUsers(db *gorm.DB) error {
 		return err
 	}
 
-	users := []models.User{
-		{
-			Email:          "admin@chula.test",
-			Name:           "Chula Admin",
-			IsAdmin:        true,
-			OrganizationID: orgs[0].ID,
-			Password:       hash("password123"),
-		},
-		{
-			Email:          "user1@chula.test",
-			Name:           "Researcher 1",
-			IsAdmin:        false,
-			OrganizationID: orgs[0].ID,
-			Password:       hash("321drowssap"),
-		},
-		{
-			Email:          "researcher@qst.test",
-			Name:           "Sam the Scientist",
-			IsAdmin:        false,
-			OrganizationID: orgs[1].ID,
-			Password:       hash("123password"),
-		},
+	type userSeed struct {
+		user   models.User
+		orgIdx int
+		role   models.MemberRole
 	}
 
-	for _, user := range users {
-		if err := db.Where("email = ?", user.Email).FirstOrCreate(&user).Error; err != nil {
+	seeds := []userSeed{
+		{user: models.User{Email: "admin@chula.test", Name: "Chula Admin", Password: hash("password123")}, orgIdx: 0, role: models.RoleAdmin},
+		{user: models.User{Email: "user1@chula.test", Name: "Researcher 1", Password: hash("321drowssap")}, orgIdx: 0, role: models.RoleUser},
+		{user: models.User{Email: "researcher@qst.test", Name: "Sam the Scientist", Password: hash("123password")}, orgIdx: 1, role: models.RoleUser},
+	}
+
+	for i := range seeds {
+		u := &seeds[i].user
+		if err := db.Where("email = ?", u.Email).FirstOrCreate(u).Error; err != nil {
+			return err
+		}
+		membership := models.UserOrganization{
+			UserID:         u.ID,
+			OrganizationID: orgs[seeds[i].orgIdx].ID,
+			Role:           seeds[i].role,
+		}
+		if err := db.Where("user_id = ? AND organization_id = ?", membership.UserID, membership.OrganizationID).
+			FirstOrCreate(&membership).Error; err != nil {
 			return err
 		}
 	}

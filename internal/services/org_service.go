@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
@@ -18,6 +19,10 @@ type OrganizationService interface {
 	UpdateOrganization(ctx context.Context, id uuid.UUID, req *models.UpdateOrganizationRequest) (*models.Organization, error)
 	DeleteOrganization(ctx context.Context, id uuid.UUID) error
 	SearchOrganizations(ctx context.Context, query string, limit int) ([]models.Organization, error)
+	ListMembers(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
+	AddMember(ctx context.Context, orgID uuid.UUID, req *models.AddMemberRequest) error
+	RemoveMember(ctx context.Context, orgID, userID uuid.UUID) error
+	SetRole(ctx context.Context, orgID, userID uuid.UUID, role models.MemberRole) error
 }
 
 // organizationService is the concrete implementation of OrganizationService
@@ -79,4 +84,42 @@ func (s *organizationService) DeleteOrganization(ctx context.Context, id uuid.UU
 // SearchOrganizations searches organizations by name
 func (s *organizationService) SearchOrganizations(ctx context.Context, query string, limit int) ([]models.Organization, error) {
 	return s.orgRepo.Search(ctx, query, limit)
+}
+
+// ListMembers returns all members of an organization
+func (s *organizationService) ListMembers(ctx context.Context, orgID uuid.UUID) ([]models.User, error) {
+	org, err := s.orgRepo.FindByID(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+	if org == nil {
+		return nil, errors.New("organization not found")
+	}
+	return s.orgRepo.FindMembers(ctx, orgID)
+}
+
+// AddMember adds a user to an organization
+func (s *organizationService) AddMember(ctx context.Context, orgID uuid.UUID, req *models.AddMemberRequest) error {
+	org, err := s.orgRepo.FindByID(ctx, orgID)
+	if err != nil {
+		return err
+	}
+	if org == nil {
+		return errors.New("organization not found")
+	}
+	return s.orgRepo.AddMember(ctx, &models.UserOrganization{
+		OrganizationID: orgID,
+		UserID:         req.UserID,
+		Role:           req.Role,
+	})
+}
+
+// RemoveMember removes a user from an organization
+func (s *organizationService) RemoveMember(ctx context.Context, orgID, userID uuid.UUID) error {
+	return s.orgRepo.RemoveMember(ctx, orgID, userID)
+}
+
+// SetRole updates the role of a member
+func (s *organizationService) SetRole(ctx context.Context, orgID, userID uuid.UUID, role models.MemberRole) error {
+	return s.orgRepo.SetRole(ctx, orgID, userID, role)
 }

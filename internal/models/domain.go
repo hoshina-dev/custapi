@@ -8,22 +8,28 @@ import (
 	"gorm.io/gorm"
 )
 
+// MemberRole represents a user's role within an organization
+type MemberRole string
+
+const (
+	RoleAdmin MemberRole = "admin"
+	RoleUser  MemberRole = "user"
+)
+
 // User represents a user in the system
 type User struct {
 	ID                 uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	Email              string
 	Name               string
-	OrganizationID     uuid.UUID
-	Organization       Organization
 	Password           string
-	IsAdmin            bool
 	PhoneNumber        *string
 	SocialMedia        *string
 	Description        *string
 	AvatarURL          *string
-	ResearchCategories pq.StringArray `gorm:"type:text[];default:'{}'"`
-	CreatedAt          time.Time      `gorm:"autoCreateTime"`
-	UpdatedAt          time.Time      `gorm:"autoUpdateTime"`
+	ResearchCategories pq.StringArray     `gorm:"type:text[];default:'{}'"`
+	Organizations      []UserOrganization `gorm:"foreignKey:UserID"`
+	CreatedAt          time.Time          `gorm:"autoCreateTime"`
+	UpdatedAt          time.Time          `gorm:"autoUpdateTime"`
 	DeletedAt          gorm.DeletedAt
 }
 
@@ -36,8 +42,16 @@ type Organization struct {
 	Address     *string
 	Description *string
 	ImageUrls   pq.StringArray `gorm:"type:text[];default:'{}'"`
-	Users       []User
-	CreatedAt   time.Time `gorm:"autoCreateTime"`
-	UpdatedAt   time.Time `gorm:"autoUpdateTime"`
+	CreatedAt   time.Time      `gorm:"autoCreateTime"`
+	UpdatedAt   time.Time      `gorm:"autoUpdateTime"`
 	DeletedAt   gorm.DeletedAt
+}
+
+// UserOrganization represents a user's membership in an organization.
+type UserOrganization struct {
+	UserID         uuid.UUID    `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID    `gorm:"type:uuid;primaryKey"`
+	Role           MemberRole   `gorm:"type:varchar(50);default:'user'"`
+	CreatedAt      time.Time    `gorm:"autoCreateTime"`
+	Organization   Organization `gorm:"foreignKey:OrganizationID"`
 }

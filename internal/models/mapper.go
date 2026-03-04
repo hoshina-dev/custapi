@@ -53,16 +53,12 @@ func (req *CreateUserRequest) ToDomain() (*User, error) {
 	user := &User{
 		Email:              req.Email,
 		Name:               req.Name,
-		OrganizationID:     req.OrganizationID,
 		Password:           string(hashedPassword),
 		PhoneNumber:        req.PhoneNumber,
 		SocialMedia:        req.SocialMedia,
 		Description:        req.Description,
 		AvatarURL:          req.AvatarURL,
 		ResearchCategories: req.ResearchCategories,
-	}
-	if req.IsAdmin != nil {
-		user.IsAdmin = *req.IsAdmin
 	}
 	return user, nil
 }
@@ -83,45 +79,53 @@ func (req *UpdateUserRequest) ToDomain(id uuid.UUID) (*User, error) {
 	if req.Name != nil {
 		user.Name = *req.Name
 	}
-	if req.OrganizationID != nil {
-		user.OrganizationID = *req.OrganizationID
-	}
-	if req.IsAdmin != nil {
-		user.IsAdmin = *req.IsAdmin
-	}
 	return user, nil
 }
 
 func (user *User) ToResponse() UserResponse {
+	orgs := make([]UserMembershipResponse, 0, len(user.Organizations))
+	for _, m := range user.Organizations {
+		orgs = append(orgs, UserMembershipResponse{
+			OrganizationID:   m.OrganizationID,
+			OrganizationName: m.Organization.Name,
+			Role:             m.Role,
+		})
+	}
 	return UserResponse{
 		ID:                 user.ID,
 		Email:              user.Email,
 		Name:               user.Name,
-		OrganizationID:     user.OrganizationID,
-		IsAdmin:            user.IsAdmin,
 		PhoneNumber:        user.PhoneNumber,
 		SocialMedia:        user.SocialMedia,
 		Description:        user.Description,
 		AvatarURL:          user.AvatarURL,
 		ResearchCategories: user.ResearchCategories,
+		Organizations:      orgs,
 		CreatedAt:          user.CreatedAt,
 		UpdatedAt:          user.UpdatedAt,
 	}
 }
 
 func (user *User) ToDetailResponse() UserDetailResponse {
+	orgs := make([]UserMembershipResponse, 0, len(user.Organizations))
+	for _, m := range user.Organizations {
+		orgs = append(orgs, UserMembershipResponse{
+			OrganizationID:   m.OrganizationID,
+			OrganizationName: m.Organization.Name,
+			Role:             m.Role,
+		})
+	}
 	return UserDetailResponse{
 		ID:                 user.ID,
 		Email:              user.Email,
 		Name:               user.Name,
-		OrganizationID:     user.OrganizationID,
 		Password:           user.Password,
-		IsAdmin:            user.IsAdmin,
 		PhoneNumber:        user.PhoneNumber,
 		SocialMedia:        user.SocialMedia,
 		Description:        user.Description,
 		AvatarURL:          user.AvatarURL,
 		ResearchCategories: user.ResearchCategories,
+		Organizations:      orgs,
 		CreatedAt:          user.CreatedAt,
 		UpdatedAt:          user.UpdatedAt,
 	}

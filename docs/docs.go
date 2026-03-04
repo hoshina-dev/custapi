@@ -389,6 +389,232 @@ const docTemplate = `{
                 }
             }
         },
+        "/organizations/{id}/members": {
+            "get": {
+                "description": "Get all users that belong to an organization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organizations"
+                ],
+                "summary": "Get members of an organization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Organization ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/UserResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add an existing user to an organization with an optional admin role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organizations"
+                ],
+                "summary": "Add a member to an organization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Organization ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Member to add",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AddMemberRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizations/{id}/members/{user_id}": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organizations"
+                ],
+                "summary": "Remove a member from an organization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Organization ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organizations"
+                ],
+                "summary": "Update a member's admin role",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Organization ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Role to set",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SetRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Returns a list of all users",
@@ -787,6 +1013,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "AddMemberRequest": {
+            "type": "object",
+            "required": [
+                "user_id"
+            ],
+            "properties": {
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                        }
+                    ],
+                    "example": "user"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                }
+            }
+        },
         "CreateOrganizationRequest": {
             "type": "object",
             "required": [
@@ -832,7 +1078,6 @@ const docTemplate = `{
             "required": [
                 "email",
                 "name",
-                "organization_id",
                 "password"
             ],
             "properties": {
@@ -848,18 +1093,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "user@example.com"
                 },
-                "is_admin": {
-                    "type": "boolean",
-                    "example": true
-                },
                 "name": {
                     "type": "string",
                     "maxLength": 255,
                     "example": "John Doe"
-                },
-                "organization_id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440001"
                 },
                 "password": {
                     "type": "string",
@@ -994,6 +1231,22 @@ const docTemplate = `{
                 }
             }
         },
+        "SetRoleRequest": {
+            "type": "object",
+            "required": [
+                "role"
+            ],
+            "properties": {
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                        }
+                    ],
+                    "example": "admin"
+                }
+            }
+        },
         "UpdateOrganizationRequest": {
             "type": "object",
             "properties": {
@@ -1044,18 +1297,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "user@example.com"
                 },
-                "is_admin": {
-                    "type": "boolean",
-                    "example": true
-                },
                 "name": {
                     "type": "string",
                     "maxLength": 255,
                     "example": "John Doe"
-                },
-                "organization_id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440001"
                 },
                 "password": {
                     "type": "string",
@@ -1088,9 +1333,7 @@ const docTemplate = `{
                 "created_at",
                 "email",
                 "id",
-                "is_admin",
                 "name",
-                "organization_id",
                 "password",
                 "research_categories",
                 "updated_at"
@@ -1116,17 +1359,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
-                "is_admin": {
-                    "type": "boolean",
-                    "example": true
-                },
                 "name": {
                     "type": "string",
                     "example": "John Doe"
                 },
-                "organization_id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                "organizations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserMembershipResponse"
+                    }
                 },
                 "password": {
                     "type": "string",
@@ -1157,15 +1398,34 @@ const docTemplate = `{
                 }
             }
         },
+        "UserMembershipResponse": {
+            "type": "object",
+            "properties": {
+                "organization_id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "organization_name": {
+                    "type": "string",
+                    "example": "Acme Corp"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                        }
+                    ],
+                    "example": "user"
+                }
+            }
+        },
         "UserResponse": {
             "type": "object",
             "required": [
                 "created_at",
                 "email",
                 "id",
-                "is_admin",
                 "name",
-                "organization_id",
                 "research_categories",
                 "updated_at"
             ],
@@ -1190,17 +1450,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 },
-                "is_admin": {
-                    "type": "boolean",
-                    "example": true
-                },
                 "name": {
                     "type": "string",
                     "example": "John Doe"
                 },
-                "organization_id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                "organizations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserMembershipResponse"
+                    }
                 },
                 "phone_number": {
                     "type": "string",
@@ -1226,6 +1484,17 @@ const docTemplate = `{
                     "example": "2026-01-01T12:00:00.00000+07:00"
                 }
             }
+        },
+        "github_com_hoshina-dev_custapi_internal_models.MemberRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "RoleAdmin",
+                "RoleUser"
+            ]
         }
     },
     "tags": [

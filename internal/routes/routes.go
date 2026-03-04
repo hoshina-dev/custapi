@@ -50,5 +50,10 @@ func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *
 		org.Post("/batch", orgHandler.GetByIDs)
 		org.Patch("/:id", orgHandler.UpdateOrganization)
 		org.Delete("/:id", orgHandler.DeleteOrganization)
+		// Organization membership routes
+		org.Get("/:id/members", orgHandler.GetMembers)
+		org.Post("/:id/members", orgHandler.AddMember)
+		org.Delete("/:id/members/:user_id", orgHandler.RemoveMember)
+		org.Patch("/:id/members/:user_id", orgHandler.SetRole)
 	}
 }
