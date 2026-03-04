@@ -13,15 +13,15 @@ func seedUsers(db *gorm.DB) error {
 	}
 
 	type userSeed struct {
-		user    models.User
-		orgIdx  int
-		isAdmin bool
+		user   models.User
+		orgIdx int
+		role   models.MemberRole
 	}
 
 	seeds := []userSeed{
-		{user: models.User{Email: "admin@chula.test", Name: "Chula Admin", Password: hash("password123")}, orgIdx: 0, isAdmin: true},
-		{user: models.User{Email: "user1@chula.test", Name: "Researcher 1", Password: hash("321drowssap")}, orgIdx: 0, isAdmin: false},
-		{user: models.User{Email: "researcher@qst.test", Name: "Sam the Scientist", Password: hash("123password")}, orgIdx: 1, isAdmin: false},
+		{user: models.User{Email: "admin@chula.test", Name: "Chula Admin", Password: hash("password123")}, orgIdx: 0, role: models.RoleAdmin},
+		{user: models.User{Email: "user1@chula.test", Name: "Researcher 1", Password: hash("321drowssap")}, orgIdx: 0, role: models.RoleUser},
+		{user: models.User{Email: "researcher@qst.test", Name: "Sam the Scientist", Password: hash("123password")}, orgIdx: 1, role: models.RoleUser},
 	}
 
 	for i := range seeds {
@@ -32,7 +32,7 @@ func seedUsers(db *gorm.DB) error {
 		membership := models.UserOrganization{
 			UserID:         u.ID,
 			OrganizationID: orgs[seeds[i].orgIdx].ID,
-			IsAdmin:        seeds[i].isAdmin,
+			Role:           seeds[i].role,
 		}
 		if err := db.Where("user_id = ? AND organization_id = ?", membership.UserID, membership.OrganizationID).
 			FirstOrCreate(&membership).Error; err != nil {
