@@ -18,7 +18,7 @@ FROM (VALUES
     ('ivan@mit.edu',        'Ivan Chen',           'Massachusetts Institute of Technology',      'Graduate researcher in the MIT Computer Science department.',                '{Distributed Systems,"Cloud Computing"}'),
     ('julia@mit.edu',       'Julia Park',          'Massachusetts Institute of Technology',      'Lab director and PI of the MIT Autonomous Systems Lab.',                     '{Autonomous Vehicles,"Computer Vision",SLAM}'),
     ('kai@technion.ac.il',  'Kai Levi',            'Technion - Israel Institute of Technology',  'Senior researcher in the Technion Cyber-Security center.',                   '{Cybersecurity,"Formal Verification","Network Security"}'),
-    ('luna@skibidi.edu',    'Luna Skibidi',        'Skibidi 67 Research Institution',            'Founder and lead scientist of Skibidi 67 Research Institution.',             '{"Experimental Physics","Chaos Theory"}')
+    ('walter.white@ethz.ch', 'Walter White',       'ETH Zurich',                                 'Lead chemist and research director at ETH Zurich.',                          '{Chemistry,"Materials Science","Chaos Theory"}')
 ) AS v(email, name, org_name, description, research_categories)
 JOIN organizations o ON o.name = v.org_name AND o.deleted_at IS NULL
 ON CONFLICT (email) DO NOTHING;
