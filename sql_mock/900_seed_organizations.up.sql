@@ -1,7 +1,6 @@
 INSERT INTO organizations (name, address, description, image_urls, latitude, longitude) VALUES
     ('Chulalongkorn University', '254 Phayathai Rd, Pathum Wan, Bangkok 10330, Thailand', 'Leading University in Thailand', ARRAY['https://hoshina-storage.ase.cx/organization-image/chula-faculty-arts-hero-desktop.jpg'], 13.7384971, 100.5320896),
     ('Suranaree University of Technology', '111 University Ave, Mueang Nakhon Ratchasima District, Nakhon Ratchasima 30000, Thailand', 'Leading technology university in Northeast Thailand', ARRAY['https://hoshina-storage.ase.cx/organization-image/sut.jpg'], 14.8817687, 102.0205583),
-    ('Skibidi 67 Research Institution', 'Highway 48, Cambodia', 'Beyond Gen Z comprehension', ARRAY['https://hoshina-storage.ase.cx/organization-image/six-seven-ultimate.webp'], 11.644940, 102.906041),
     ('School of Computing, NUS', 'Computing Dr, Queenstown, Singapore', 'International business solutions provider', ARRAY['https://hoshina-storage.ase.cx/organization-image/2017_Computing-1.avif'], 1.2948787, 103.773739),
     ('Tokyo University', '7 Chome-3-1 Hongo, Bunkyo City, Tokyo 113-8654, Japan', 'Top University in Japan', ARRAY['https://hoshina-storage.ase.cx/organization-image/Yasuda-Auditorium-University-of-Tokyo.webp'], 35.7137349, 139.7628182),
     ('Tokyo Institute of Technology', '2 Chome-12-1 Ookayama, Meguro City, Tokyo 152-8550, Japan', 'Toukoudai (not Toudai)', ARRAY['https://hoshina-storage.ase.cx/organization-image/toukoudai.webp'], 35.6059769, 139.6827661),
