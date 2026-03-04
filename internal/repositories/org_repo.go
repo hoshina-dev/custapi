@@ -23,7 +23,7 @@ type OrganizationRepository interface {
 	FindMembers(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
 	AddMember(ctx context.Context, m *models.UserOrganization) error
 	RemoveMember(ctx context.Context, orgID, userID uuid.UUID) error
-	SetAdmin(ctx context.Context, orgID, userID uuid.UUID, isAdmin bool) error
+	SetRole(ctx context.Context, orgID, userID uuid.UUID, role models.MemberRole) error
 }
 
 // organizationRepository is the concrete implementation of OrganizationRepository
@@ -136,12 +136,12 @@ func (r *organizationRepository) RemoveMember(ctx context.Context, orgID, userID
 	return nil
 }
 
-// SetAdmin updates the is_admin flag for an existing membership
-func (r *organizationRepository) SetAdmin(ctx context.Context, orgID, userID uuid.UUID, isAdmin bool) error {
+// SetRole updates the role for an existing membership
+func (r *organizationRepository) SetRole(ctx context.Context, orgID, userID uuid.UUID, role models.MemberRole) error {
 	res := r.db.WithContext(ctx).
 		Model(&models.UserOrganization{}).
 		Where("organization_id = ? AND user_id = ?", orgID, userID).
-		Update("is_admin", isAdmin)
+		Update("role", role)
 	if res.Error != nil {
 		return res.Error
 	}

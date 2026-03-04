@@ -88,7 +88,7 @@ func (user *User) ToResponse() UserResponse {
 		orgs = append(orgs, UserMembershipResponse{
 			OrganizationID:   m.OrganizationID,
 			OrganizationName: m.Organization.Name,
-			IsAdmin:          m.IsAdmin,
+			Role:             m.Role,
 		})
 	}
 	return UserResponse{
@@ -112,7 +112,7 @@ func (user *User) ToDetailResponse() UserDetailResponse {
 		orgs = append(orgs, UserMembershipResponse{
 			OrganizationID:   m.OrganizationID,
 			OrganizationName: m.Organization.Name,
-			IsAdmin:          m.IsAdmin,
+			Role:             m.Role,
 		})
 	}
 	return UserDetailResponse{

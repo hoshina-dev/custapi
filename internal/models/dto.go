@@ -8,9 +8,9 @@ import (
 
 // UserMembershipResponse represents a single org membership embedded in UserResponse
 type UserMembershipResponse struct {
-	OrganizationID   uuid.UUID `json:"organization_id" example:"550e8400-e29b-41d4-a716-446655440001"`
-	OrganizationName string    `json:"organization_name" example:"Acme Corp"`
-	IsAdmin          bool      `json:"is_admin" example:"false"`
+	OrganizationID   uuid.UUID  `json:"organization_id" example:"550e8400-e29b-41d4-a716-446655440001"`
+	OrganizationName string     `json:"organization_name" example:"Acme Corp"`
+	Role             MemberRole `json:"role" example:"user"`
 } //	@name	UserMembershipResponse
 
 // UserResponse is the DTO for user responses
@@ -67,14 +67,14 @@ type UpdateUserRequest struct {
 
 // AddMemberRequest is the DTO for adding a user to an organization
 type AddMemberRequest struct {
-	UserID  uuid.UUID `json:"user_id" validate:"required,uuid" example:"550e8400-e29b-41d4-a716-446655440000"`
-	IsAdmin bool      `json:"is_admin" example:"false"`
+	UserID uuid.UUID  `json:"user_id" validate:"required,uuid" example:"550e8400-e29b-41d4-a716-446655440000"`
+	Role   MemberRole `json:"role" example:"user"`
 } //	@name	AddMemberRequest
 
-// SetAdminRequest is the DTO for updating a member's admin role within an organization
-type SetAdminRequest struct {
-	IsAdmin bool `json:"is_admin" validate:"required" example:"true"`
-} //	@name	SetAdminRequest
+// SetRoleRequest is the DTO for updating a member's role within an organization
+type SetRoleRequest struct {
+	Role MemberRole `json:"role" validate:"required" example:"admin"`
+} //	@name	SetRoleRequest
 
 // OrganizationResponse is the DTO for organization responses
 type OrganizationResponse struct {

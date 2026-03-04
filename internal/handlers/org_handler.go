@@ -392,13 +392,13 @@ func (h *OrgHandler) RemoveMember(c *fiber.Ctx) error {
 //	@Produce	json
 //	@Param		id		path	string					true	"Organization ID"
 //	@Param		user_id	path	string					true	"User ID"
-//	@Param		req		body	models.SetAdminRequest	true	"Admin flag"
-//	@Success	204
-//	@Failure	400	{object}	models.ErrorResponse
-//	@Failure	404	{object}	models.ErrorResponse
-//	@Failure	500	{object}	models.ErrorResponse
-//	@Router		/organizations/{id}/members/{user_id} [patch]
-func (h *OrgHandler) SetAdmin(c *fiber.Ctx) error {
+//	@Param			req			body		models.SetRoleRequest	true	"Role to set"
+//	@Success		204
+//	@Failure		400	{object}	models.ErrorResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/organizations/{id}/members/{user_id} [patch]
+func (h *OrgHandler) SetRole(c *fiber.Ctx) error {
 	orgID, err := uuid.Parse(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
@@ -408,12 +408,12 @@ func (h *OrgHandler) SetAdmin(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
 	}
 
-	req := new(models.SetAdminRequest)
+	req := new(models.SetRoleRequest)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid json payload"})
 	}
 
-	if err := h.orgService.SetAdmin(c.Context(), orgID, userID, req.IsAdmin); err != nil {
+	if err := h.orgService.SetRole(c.Context(), orgID, userID, req.Role); err != nil {
 		if err.Error() == "member not found" {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
 		}

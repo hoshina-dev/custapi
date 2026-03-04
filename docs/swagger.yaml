@@ -2,9 +2,10 @@ basePath: /api/v1
 definitions:
   AddMemberRequest:
     properties:
-      is_admin:
-        example: false
-        type: boolean
+      role:
+        allOf:
+        - $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole'
+        example: user
       user_id:
         example: 550e8400-e29b-41d4-a716-446655440000
         type: string
@@ -155,13 +156,14 @@ definitions:
     - name
     - updated_at
     type: object
-  SetAdminRequest:
+  SetRoleRequest:
     properties:
-      is_admin:
-        example: true
-        type: boolean
+      role:
+        allOf:
+        - $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole'
+        example: admin
     required:
-    - is_admin
+    - role
     type: object
   UpdateOrganizationRequest:
     properties:
@@ -276,15 +278,16 @@ definitions:
     type: object
   UserMembershipResponse:
     properties:
-      is_admin:
-        example: false
-        type: boolean
       organization_id:
         example: 550e8400-e29b-41d4-a716-446655440001
         type: string
       organization_name:
         example: Acme Corp
         type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole'
+        example: user
     type: object
   UserResponse:
     properties:
@@ -335,6 +338,14 @@ definitions:
     - research_categories
     - updated_at
     type: object
+  github_com_hoshina-dev_custapi_internal_models.MemberRole:
+    enum:
+    - admin
+    - user
+    type: string
+    x-enum-varnames:
+    - RoleAdmin
+    - RoleUser
 info:
   contact: {}
   description: A simple REST API for managing users and organizations
@@ -621,12 +632,12 @@ paths:
         name: user_id
         required: true
         type: string
-      - description: Admin flag
+      - description: Role to set
         in: body
         name: req
         required: true
         schema:
-          $ref: '#/definitions/SetAdminRequest'
+          $ref: '#/definitions/SetRoleRequest'
       produces:
       - application/json
       responses:

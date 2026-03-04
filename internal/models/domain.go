@@ -8,6 +8,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// MemberRole represents a user's role within an organization
+type MemberRole string
+
+const (
+	RoleAdmin MemberRole = "admin"
+	RoleUser  MemberRole = "user"
+)
+
 // User represents a user in the system
 type User struct {
 	ID                 uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
@@ -43,7 +51,7 @@ type Organization struct {
 type UserOrganization struct {
 	UserID         uuid.UUID    `gorm:"type:uuid;primaryKey"`
 	OrganizationID uuid.UUID    `gorm:"type:uuid;primaryKey"`
-	IsAdmin        bool         `gorm:"default:false"`
+	Role           MemberRole   `gorm:"type:varchar(50);default:'user'"`
 	CreatedAt      time.Time    `gorm:"autoCreateTime"`
 	Organization   Organization `gorm:"foreignKey:OrganizationID"`
 }

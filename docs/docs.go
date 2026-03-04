@@ -581,12 +581,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Admin flag",
+                        "description": "Role to set",
                         "name": "req",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/SetAdminRequest"
+                            "$ref": "#/definitions/SetRoleRequest"
                         }
                     }
                 ],
@@ -1019,9 +1019,13 @@ const docTemplate = `{
                 "user_id"
             ],
             "properties": {
-                "is_admin": {
-                    "type": "boolean",
-                    "example": false
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                        }
+                    ],
+                    "example": "user"
                 },
                 "user_id": {
                     "type": "string",
@@ -1227,15 +1231,19 @@ const docTemplate = `{
                 }
             }
         },
-        "SetAdminRequest": {
+        "SetRoleRequest": {
             "type": "object",
             "required": [
-                "is_admin"
+                "role"
             ],
             "properties": {
-                "is_admin": {
-                    "type": "boolean",
-                    "example": true
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                        }
+                    ],
+                    "example": "admin"
                 }
             }
         },
@@ -1393,10 +1401,6 @@ const docTemplate = `{
         "UserMembershipResponse": {
             "type": "object",
             "properties": {
-                "is_admin": {
-                    "type": "boolean",
-                    "example": false
-                },
                 "organization_id": {
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440001"
@@ -1404,6 +1408,14 @@ const docTemplate = `{
                 "organization_name": {
                     "type": "string",
                     "example": "Acme Corp"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                        }
+                    ],
+                    "example": "user"
                 }
             }
         },
@@ -1472,6 +1484,17 @@ const docTemplate = `{
                     "example": "2026-01-01T12:00:00.00000+07:00"
                 }
             }
+        },
+        "github_com_hoshina-dev_custapi_internal_models.MemberRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "RoleAdmin",
+                "RoleUser"
+            ]
         }
     },
     "tags": [

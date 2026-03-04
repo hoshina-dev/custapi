@@ -22,7 +22,7 @@ type OrganizationService interface {
 	ListMembers(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
 	AddMember(ctx context.Context, orgID uuid.UUID, req *models.AddMemberRequest) error
 	RemoveMember(ctx context.Context, orgID, userID uuid.UUID) error
-	SetAdmin(ctx context.Context, orgID, userID uuid.UUID, isAdmin bool) error
+	SetRole(ctx context.Context, orgID, userID uuid.UUID, role models.MemberRole) error
 }
 
 // organizationService is the concrete implementation of OrganizationService
@@ -110,7 +110,7 @@ func (s *organizationService) AddMember(ctx context.Context, orgID uuid.UUID, re
 	return s.orgRepo.AddMember(ctx, &models.UserOrganization{
 		OrganizationID: orgID,
 		UserID:         req.UserID,
-		IsAdmin:        req.IsAdmin,
+		Role:           req.Role,
 	})
 }
 
@@ -119,7 +119,7 @@ func (s *organizationService) RemoveMember(ctx context.Context, orgID, userID uu
 	return s.orgRepo.RemoveMember(ctx, orgID, userID)
 }
 
-// SetAdmin updates the admin role of a member
-func (s *organizationService) SetAdmin(ctx context.Context, orgID, userID uuid.UUID, isAdmin bool) error {
-	return s.orgRepo.SetAdmin(ctx, orgID, userID, isAdmin)
+// SetRole updates the role of a member
+func (s *organizationService) SetRole(ctx context.Context, orgID, userID uuid.UUID, role models.MemberRole) error {
+	return s.orgRepo.SetRole(ctx, orgID, userID, role)
 }
