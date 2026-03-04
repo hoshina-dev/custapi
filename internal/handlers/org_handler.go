@@ -392,12 +392,12 @@ func (h *OrgHandler) RemoveMember(c *fiber.Ctx) error {
 //	@Produce	json
 //	@Param		id		path	string					true	"Organization ID"
 //	@Param		user_id	path	string					true	"User ID"
-//	@Param			req			body		models.SetRoleRequest	true	"Role to set"
-//	@Success		204
-//	@Failure		400	{object}	models.ErrorResponse
-//	@Failure		404	{object}	models.ErrorResponse
-//	@Failure		500	{object}	models.ErrorResponse
-//	@Router			/organizations/{id}/members/{user_id} [patch]
+//	@Param		req		body	models.SetRoleRequest	true	"Role to set"
+//	@Success	204
+//	@Failure	400	{object}	models.ErrorResponse
+//	@Failure	404	{object}	models.ErrorResponse
+//	@Failure	500	{object}	models.ErrorResponse
+//	@Router		/organizations/{id}/members/{user_id} [patch]
 func (h *OrgHandler) SetRole(c *fiber.Ctx) error {
 	orgID, err := uuid.Parse(c.Params("id"))
 	if err != nil {
