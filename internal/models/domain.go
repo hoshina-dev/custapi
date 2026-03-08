@@ -53,5 +53,6 @@ type UserOrganization struct {
 	OrganizationID uuid.UUID    `gorm:"type:uuid;primaryKey"`
 	Role           MemberRole   `gorm:"type:varchar(50);default:'user'"`
 	CreatedAt      time.Time    `gorm:"autoCreateTime"`
+	User           User         `gorm:"foreignKey:UserID"`
 	Organization   Organization `gorm:"foreignKey:OrganizationID"`
 }

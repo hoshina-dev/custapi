@@ -243,10 +243,6 @@ definitions:
       name:
         example: John Doe
         type: string
-      organizations:
-        items:
-          $ref: '#/definitions/UserMembershipResponse'
-        type: array
       password:
         example: $2a$10$hashedpassword
         type: string
@@ -278,11 +274,13 @@ definitions:
     type: object
   UserMembershipResponse:
     properties:
+      created_at:
+        example: "2026-01-01T12:00:00.00000+07:00"
+        type: string
+      organization:
+        $ref: '#/definitions/OrganizationResponse'
       organization_id:
         example: 550e8400-e29b-41d4-a716-446655440001
-        type: string
-      organization_name:
-        example: Acme Corp
         type: string
       role:
         allOf:
@@ -309,10 +307,6 @@ definitions:
       name:
         example: John Doe
         type: string
-      organizations:
-        items:
-          $ref: '#/definitions/UserMembershipResponse'
-        type: array
       phone_number:
         example: "+1234567890"
         type: string
@@ -324,6 +318,55 @@ definitions:
         items:
           type: string
         type: array
+      social_media:
+        example: '@john on Twitter, linkedin.com/in/john'
+        type: string
+      updated_at:
+        example: "2026-01-01T12:00:00.00000+07:00"
+        type: string
+    required:
+    - created_at
+    - email
+    - id
+    - name
+    - research_categories
+    - updated_at
+    type: object
+  UserWithRoleResponse:
+    properties:
+      avatar_url:
+        example: https://example.com/avatar.jpg
+        type: string
+      created_at:
+        example: "2026-01-01T12:00:00.00000+07:00"
+        type: string
+      description:
+        example: Senior researcher specializing in quantum computing
+        type: string
+      email:
+        example: user@example.com
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      name:
+        example: John Doe
+        type: string
+      phone_number:
+        example: "+1234567890"
+        type: string
+      research_categories:
+        example:
+        - QuantumComputing
+        - Qiskit
+        - Cryogenics
+        items:
+          type: string
+        type: array
+      role:
+        allOf:
+        - $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole'
+        example: user
       social_media:
         example: '@john on Twitter, linkedin.com/in/john'
         type: string
@@ -525,7 +568,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/UserResponse'
+              $ref: '#/definitions/UserWithRoleResponse'
             type: array
         "400":
           description: Bad Request
@@ -947,15 +990,15 @@ paths:
       summary: Update a user
       tags:
       - users
-  /users/organization/{org_id}:
+  /users/id/{id}/organizations:
     get:
       consumes:
       - application/json
-      description: Get all users in a specific organization
+      description: Get all organizations a user belongs to with their role
       parameters:
-      - description: Organization ID
+      - description: User ID (UUID)
         in: path
-        name: org_id
+        name: id
         required: true
         type: string
       produces:
@@ -965,8 +1008,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/UserResponse'
+              $ref: '#/definitions/UserMembershipResponse'
             type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
@@ -975,7 +1022,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/ErrorResponse'
-      summary: Get users by organization
+      summary: Get a user's organizations
       tags:
       - users
   /users/search:

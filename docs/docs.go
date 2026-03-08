@@ -417,7 +417,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/UserResponse"
+                                "$ref": "#/definitions/UserWithRoleResponse"
                             }
                         }
                     },
@@ -911,9 +911,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/organization/{org_id}": {
+        "/users/id/{id}/organizations": {
             "get": {
-                "description": "Get all users in a specific organization",
+                "description": "Get all organizations a user belongs to with their role",
                 "consumes": [
                     "application/json"
                 ],
@@ -923,12 +923,12 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Get users by organization",
+                "summary": "Get a user's organizations",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Organization ID",
-                        "name": "org_id",
+                        "description": "User ID (UUID)",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -939,8 +939,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/UserResponse"
+                                "$ref": "#/definitions/UserMembershipResponse"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
@@ -1363,12 +1369,6 @@ const docTemplate = `{
                     "type": "string",
                     "example": "John Doe"
                 },
-                "organizations": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/UserMembershipResponse"
-                    }
-                },
                 "password": {
                     "type": "string",
                     "example": "$2a$10$hashedpassword"
@@ -1401,13 +1401,16 @@ const docTemplate = `{
         "UserMembershipResponse": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-01-01T12:00:00.00000+07:00"
+                },
+                "organization": {
+                    "$ref": "#/definitions/OrganizationResponse"
+                },
                 "organization_id": {
                     "type": "string",
                     "example": "550e8400-e29b-41d4-a716-446655440001"
-                },
-                "organization_name": {
-                    "type": "string",
-                    "example": "Acme Corp"
                 },
                 "role": {
                     "allOf": [
@@ -1454,11 +1457,65 @@ const docTemplate = `{
                     "type": "string",
                     "example": "John Doe"
                 },
-                "organizations": {
+                "phone_number": {
+                    "type": "string",
+                    "example": "+1234567890"
+                },
+                "research_categories": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/UserMembershipResponse"
-                    }
+                        "type": "string"
+                    },
+                    "example": [
+                        "QuantumComputing",
+                        "Qiskit",
+                        "Cryogenics"
+                    ]
+                },
+                "social_media": {
+                    "type": "string",
+                    "example": "@john on Twitter, linkedin.com/in/john"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-01-01T12:00:00.00000+07:00"
+                }
+            }
+        },
+        "UserWithRoleResponse": {
+            "type": "object",
+            "required": [
+                "created_at",
+                "email",
+                "id",
+                "name",
+                "research_categories",
+                "updated_at"
+            ],
+            "properties": {
+                "avatar_url": {
+                    "type": "string",
+                    "example": "https://example.com/avatar.jpg"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-01-01T12:00:00.00000+07:00"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Senior researcher specializing in quantum computing"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
                 },
                 "phone_number": {
                     "type": "string",
@@ -1474,6 +1531,14 @@ const docTemplate = `{
                         "Qiskit",
                         "Cryogenics"
                     ]
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                        }
+                    ],
+                    "example": "user"
                 },
                 "social_media": {
                     "type": "string",

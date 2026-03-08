@@ -19,7 +19,7 @@ type OrganizationService interface {
 	UpdateOrganization(ctx context.Context, id uuid.UUID, req *models.UpdateOrganizationRequest) (*models.Organization, error)
 	DeleteOrganization(ctx context.Context, id uuid.UUID) error
 	SearchOrganizations(ctx context.Context, query string, limit int) ([]models.Organization, error)
-	ListMembers(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
+	ListMembers(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error)
 	AddMember(ctx context.Context, orgID uuid.UUID, req *models.AddMemberRequest) error
 	RemoveMember(ctx context.Context, orgID, userID uuid.UUID) error
 	SetRole(ctx context.Context, orgID, userID uuid.UUID, role models.MemberRole) error
@@ -87,7 +87,7 @@ func (s *organizationService) SearchOrganizations(ctx context.Context, query str
 }
 
 // ListMembers returns all members of an organization
-func (s *organizationService) ListMembers(ctx context.Context, orgID uuid.UUID) ([]models.User, error) {
+func (s *organizationService) ListMembers(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error) {
 	org, err := s.orgRepo.FindByID(ctx, orgID)
 	if err != nil {
 		return nil, err

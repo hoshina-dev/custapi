@@ -285,7 +285,7 @@ func (h *OrgHandler) SearchOrganizations(c *fiber.Ctx) error {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		string	true	"Organization ID"
-//	@Success		200	{array}		models.UserResponse
+//	@Success		200	{array}		models.UserWithRoleResponse
 //	@Failure		400	{object}	models.ErrorResponse
 //	@Failure		404	{object}	models.ErrorResponse
 //	@Failure		500	{object}	models.ErrorResponse
@@ -296,7 +296,7 @@ func (h *OrgHandler) GetMembers(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
 	}
 
-	users, err := h.orgService.ListMembers(c.Context(), orgID)
+	memberships, err := h.orgService.ListMembers(c.Context(), orgID)
 	if err != nil {
 		if err.Error() == "organization not found" {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
@@ -304,9 +304,9 @@ func (h *OrgHandler) GetMembers(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
 
-	response := make([]models.UserResponse, len(users))
-	for i, u := range users {
-		response[i] = u.ToResponse()
+	response := make([]models.UserWithRoleResponse, len(memberships))
+	for i, m := range memberships {
+		response[i] = m.User.ToWithRoleResponse(m.Role)
 	}
 
 	return c.JSON(response)
