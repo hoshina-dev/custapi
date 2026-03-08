@@ -15,7 +15,6 @@ type UserService interface {
 	GetUser(ctx context.Context, id uuid.UUID) (*models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	ListUsers(ctx context.Context) ([]models.User, error)
-	ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error)
 	GetUserOrganizations(ctx context.Context, userID uuid.UUID) ([]models.UserOrganization, error)
 	Update(ctx context.Context, id uuid.UUID, req *models.UpdateUserRequest) (*models.User, error)
 	Delete(ctx context.Context, id uuid.UUID) error
@@ -63,18 +62,6 @@ func (s *userService) GetUserByEmail(ctx context.Context, email string) (*models
 // ListUsers retrieves all users
 func (s *userService) ListUsers(ctx context.Context) ([]models.User, error) {
 	return s.userRepo.FindAll(ctx)
-}
-
-// ListUsersByOrganization retrieves users by organization
-func (s *userService) ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error) {
-	org, err := s.orgRepo.FindByID(ctx, orgID)
-	if err != nil {
-		return nil, err
-	}
-	if org == nil {
-		return nil, errors.New("organization not found")
-	}
-	return s.userRepo.FindByOrganizationID(ctx, orgID)
 }
 
 // GetUserOrganizations retrieves all organizations a user belongs to

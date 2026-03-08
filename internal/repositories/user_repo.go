@@ -16,7 +16,6 @@ type UserRepository interface {
 	FindByID(ctx context.Context, id uuid.UUID) (*models.User, error)
 	FindByEmail(ctx context.Context, email string) (*models.User, error)
 	FindAll(ctx context.Context) ([]models.User, error)
-	FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error)
 	FindUserOrganizations(ctx context.Context, userID uuid.UUID) ([]models.UserOrganization, error)
 	Update(ctx context.Context, user *models.User) error
 	Delete(ctx context.Context, id uuid.UUID) error
@@ -69,17 +68,6 @@ func (r *userRepository) FindAll(ctx context.Context) ([]models.User, error) {
 	var users []models.User
 	err := r.db.WithContext(ctx).Order("created_at DESC").Find(&users).Error
 	return users, err
-}
-
-// FindByOrganizationID finds all memberships for an organization with preloaded users
-func (r *userRepository) FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error) {
-	var memberships []models.UserOrganization
-	err := r.db.WithContext(ctx).
-		Where("organization_id = ?", orgID).
-		Preload("User").
-		Order("created_at DESC").
-		Find(&memberships).Error
-	return memberships, err
 }
 
 // FindUserOrganizations finds all organizations a user belongs to
