@@ -83,14 +83,6 @@ func (req *UpdateUserRequest) ToDomain(id uuid.UUID) (*User, error) {
 }
 
 func (user *User) ToResponse() UserResponse {
-	orgs := make([]UserMembershipResponse, 0, len(user.Organizations))
-	for _, m := range user.Organizations {
-		orgs = append(orgs, UserMembershipResponse{
-			OrganizationID:   m.OrganizationID,
-			OrganizationName: m.Organization.Name,
-			Role:             m.Role,
-		})
-	}
 	return UserResponse{
 		ID:                 user.ID,
 		Email:              user.Email,
@@ -100,21 +92,12 @@ func (user *User) ToResponse() UserResponse {
 		Description:        user.Description,
 		AvatarURL:          user.AvatarURL,
 		ResearchCategories: user.ResearchCategories,
-		Organizations:      orgs,
 		CreatedAt:          user.CreatedAt,
 		UpdatedAt:          user.UpdatedAt,
 	}
 }
 
 func (user *User) ToDetailResponse() UserDetailResponse {
-	orgs := make([]UserMembershipResponse, 0, len(user.Organizations))
-	for _, m := range user.Organizations {
-		orgs = append(orgs, UserMembershipResponse{
-			OrganizationID:   m.OrganizationID,
-			OrganizationName: m.Organization.Name,
-			Role:             m.Role,
-		})
-	}
 	return UserDetailResponse{
 		ID:                 user.ID,
 		Email:              user.Email,
@@ -125,8 +108,23 @@ func (user *User) ToDetailResponse() UserDetailResponse {
 		Description:        user.Description,
 		AvatarURL:          user.AvatarURL,
 		ResearchCategories: user.ResearchCategories,
-		Organizations:      orgs,
 		CreatedAt:          user.CreatedAt,
 		UpdatedAt:          user.UpdatedAt,
+	}
+}
+
+func (user *User) ToWithRoleResponse(role MemberRole) UserWithRoleResponse {
+	return UserWithRoleResponse{
+		UserResponse: user.ToResponse(),
+		Role:         role,
+	}
+}
+
+func (uo *UserOrganization) ToMembershipResponse() UserMembershipResponse {
+	return UserMembershipResponse{
+		OrganizationID: uo.OrganizationID,
+		Organization:   uo.Organization.ToResponse(),
+		Role:           uo.Role,
+		CreatedAt:      uo.CreatedAt,
 	}
 }

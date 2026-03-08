@@ -15,7 +15,8 @@ type UserService interface {
 	GetUser(ctx context.Context, id uuid.UUID) (*models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	ListUsers(ctx context.Context) ([]models.User, error)
-	ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
+	ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error)
+	GetUserOrganizations(ctx context.Context, userID uuid.UUID) ([]models.UserOrganization, error)
 	Update(ctx context.Context, id uuid.UUID, req *models.UpdateUserRequest) (*models.User, error)
 	Delete(ctx context.Context, id uuid.UUID) error
 	SearchUsers(ctx context.Context, query string, limit int) ([]models.User, error)
@@ -65,7 +66,7 @@ func (s *userService) ListUsers(ctx context.Context) ([]models.User, error) {
 }
 
 // ListUsersByOrganization retrieves users by organization
-func (s *userService) ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.User, error) {
+func (s *userService) ListUsersByOrganization(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error) {
 	org, err := s.orgRepo.FindByID(ctx, orgID)
 	if err != nil {
 		return nil, err
@@ -74,6 +75,18 @@ func (s *userService) ListUsersByOrganization(ctx context.Context, orgID uuid.UU
 		return nil, errors.New("organization not found")
 	}
 	return s.userRepo.FindByOrganizationID(ctx, orgID)
+}
+
+// GetUserOrganizations retrieves all organizations a user belongs to
+func (s *userService) GetUserOrganizations(ctx context.Context, userID uuid.UUID) ([]models.UserOrganization, error) {
+	user, err := s.userRepo.FindByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
+	return s.userRepo.FindUserOrganizations(ctx, userID)
 }
 
 func (s *userService) Update(ctx context.Context, id uuid.UUID, req *models.UpdateUserRequest) (*models.User, error) {

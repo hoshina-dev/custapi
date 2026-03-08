@@ -151,12 +151,12 @@ func (h *UserHandler) GetUserByEmail(c *fiber.Ctx) error {
 // GetUsersByOrganization godoc
 //
 //	@Summary		Get users by organization
-//	@Description	Get all users in a specific organization
+//	@Description	Get all users in a specific organization with their role
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
 //	@Param			org_id	path		string	true	"Organization ID"
-//	@Success		200		{array}		models.UserResponse
+//	@Success		200		{array}		models.UserWithRoleResponse
 //	@Failure		404		{object}	models.ErrorResponse
 //	@Failure		500		{object}	models.ErrorResponse
 //	@Router			/users/organization/{org_id} [get]
@@ -166,7 +166,7 @@ func (h *UserHandler) GetUsersByOrganization(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
 	}
 
-	users, err := h.userService.ListUsersByOrganization(c.Context(), orgID)
+	memberships, err := h.userService.ListUsersByOrganization(c.Context(), orgID)
 	if err != nil {
 		if err.Error() == "organization not found" {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
@@ -174,9 +174,44 @@ func (h *UserHandler) GetUsersByOrganization(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
 
-	response := make([]models.UserResponse, len(users))
-	for i, u := range users {
-		response[i] = u.ToResponse()
+	response := make([]models.UserWithRoleResponse, len(memberships))
+	for i, m := range memberships {
+		response[i] = m.User.ToWithRoleResponse(m.Role)
+	}
+
+	return c.JSON(response)
+}
+
+// GetUserOrganizations godoc
+//
+//	@Summary		Get a user's organizations
+//	@Description	Get all organizations a user belongs to with their role
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"User ID (UUID)"
+//	@Success		200	{array}		models.UserMembershipResponse
+//	@Failure		400	{object}	models.ErrorResponse
+//	@Failure		404	{object}	models.ErrorResponse
+//	@Failure		500	{object}	models.ErrorResponse
+//	@Router			/users/id/{id}/organizations [get]
+func (h *UserHandler) GetUserOrganizations(c *fiber.Ctx) error {
+	id, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
+	}
+
+	memberships, err := h.userService.GetUserOrganizations(c.Context(), id)
+	if err != nil {
+		if err.Error() == "user not found" {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+
+	response := make([]models.UserMembershipResponse, len(memberships))
+	for i, m := range memberships {
+		response[i] = m.ToMembershipResponse()
 	}
 
 	return c.JSON(response)

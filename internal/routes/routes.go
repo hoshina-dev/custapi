@@ -34,6 +34,7 @@ func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *
 		user.Get("/", userHandler.GetUsers)
 		user.Get("/search", userHandler.SearchUsers)
 		user.Get("/id/:id", userHandler.GetUser)
+		user.Get("/id/:id/organizations", userHandler.GetUserOrganizations)
 		user.Get("/email/:email", userHandler.GetUserByEmail)
 		user.Get("/organization/:org_id", userHandler.GetUsersByOrganization)
 		user.Post("/", userHandler.CreateUser)

@@ -16,7 +16,8 @@ type UserRepository interface {
 	FindByID(ctx context.Context, id uuid.UUID) (*models.User, error)
 	FindByEmail(ctx context.Context, email string) (*models.User, error)
 	FindAll(ctx context.Context) ([]models.User, error)
-	FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
+	FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error)
+	FindUserOrganizations(ctx context.Context, userID uuid.UUID) ([]models.UserOrganization, error)
 	Update(ctx context.Context, user *models.User) error
 	Delete(ctx context.Context, id uuid.UUID) error
 	Search(ctx context.Context, query string, limit int) ([]models.User, error)
@@ -40,7 +41,7 @@ func (r *userRepository) Create(ctx context.Context, user *models.User) error {
 // FindByID finds a user by ID
 func (r *userRepository) FindByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	var user models.User
-	err := r.db.WithContext(ctx).Preload("Organizations.Organization").First(&user, id).Error
+	err := r.db.WithContext(ctx).First(&user, id).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
@@ -66,20 +67,30 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*models
 // FindAll retrieves all users
 func (r *userRepository) FindAll(ctx context.Context) ([]models.User, error) {
 	var users []models.User
-	err := r.db.WithContext(ctx).Preload("Organizations.Organization").Order("created_at DESC").Find(&users).Error
+	err := r.db.WithContext(ctx).Order("created_at DESC").Find(&users).Error
 	return users, err
 }
 
-// FindByOrganizationID finds all users in an organization via the user_organization join table
-func (r *userRepository) FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.User, error) {
-	var users []models.User
+// FindByOrganizationID finds all memberships for an organization with preloaded users
+func (r *userRepository) FindByOrganizationID(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error) {
+	var memberships []models.UserOrganization
 	err := r.db.WithContext(ctx).
-		Joins("JOIN user_organizations ON user_organizations.user_id = users.id").
-		Where("user_organizations.organization_id = ?", orgID).
-		Preload("Organizations.Organization").
-		Order("users.created_at DESC").
-		Find(&users).Error
-	return users, err
+		Where("organization_id = ?", orgID).
+		Preload("User").
+		Order("created_at DESC").
+		Find(&memberships).Error
+	return memberships, err
+}
+
+// FindUserOrganizations finds all organizations a user belongs to
+func (r *userRepository) FindUserOrganizations(ctx context.Context, userID uuid.UUID) ([]models.UserOrganization, error) {
+	var memberships []models.UserOrganization
+	err := r.db.WithContext(ctx).
+		Where("user_id = ?", userID).
+		Preload("Organization").
+		Order("created_at DESC").
+		Find(&memberships).Error
+	return memberships, err
 }
 
 func (r *userRepository) Update(ctx context.Context, user *models.User) error {
@@ -103,7 +114,6 @@ func (r *userRepository) Search(ctx context.Context, query string, limit int) ([
 	escaped := escapeLike(query)
 	searchPattern := "%" + escaped + "%"
 	db := r.db.WithContext(ctx).
-		Preload("Organizations.Organization").
 		Where("name ILIKE ? ESCAPE '\\' OR email ILIKE ? ESCAPE '\\'", searchPattern, searchPattern).
 		Order("name ASC")
 

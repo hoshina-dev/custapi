@@ -20,7 +20,7 @@ type OrganizationRepository interface {
 	Update(ctx context.Context, org *models.Organization) error
 	Delete(ctx context.Context, id uuid.UUID) error
 	Search(ctx context.Context, query string, limit int) ([]models.Organization, error)
-	FindMembers(ctx context.Context, orgID uuid.UUID) ([]models.User, error)
+	FindMembers(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error)
 	AddMember(ctx context.Context, m *models.UserOrganization) error
 	RemoveMember(ctx context.Context, orgID, userID uuid.UUID) error
 	SetRole(ctx context.Context, orgID, userID uuid.UUID, role models.MemberRole) error
@@ -105,16 +105,15 @@ func (r *organizationRepository) Search(ctx context.Context, query string, limit
 	return orgs, err
 }
 
-// FindMembers returns all non-deleted users belonging to an organization
-func (r *organizationRepository) FindMembers(ctx context.Context, orgID uuid.UUID) ([]models.User, error) {
-	var users []models.User
+// FindMembers returns all memberships for an organization with preloaded users
+func (r *organizationRepository) FindMembers(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error) {
+	var memberships []models.UserOrganization
 	err := r.db.WithContext(ctx).
-		Joins("JOIN user_organizations ON user_organizations.user_id = users.id").
-		Where("user_organizations.organization_id = ?", orgID).
-		Preload("Organizations.Organization").
-		Order("users.name ASC").
-		Find(&users).Error
-	return users, err
+		Where("organization_id = ?", orgID).
+		Preload("User").
+		Order("created_at ASC").
+		Find(&memberships).Error
+	return memberships, err
 }
 
 // AddMember inserts a row into user_organizations
