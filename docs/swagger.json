@@ -1021,7 +1021,7 @@
                 "role": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                            "$ref": "#/definitions/MemberRole"
                         }
                     ],
                     "example": "user"
@@ -1152,6 +1152,17 @@
                 }
             }
         },
+        "MemberRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "RoleAdmin",
+                "RoleUser"
+            ]
+        },
         "OrganizationCoord": {
             "type": "object",
             "required": [
@@ -1239,7 +1250,7 @@
                 "role": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                            "$ref": "#/definitions/MemberRole"
                         }
                     ],
                     "example": "admin"
@@ -1408,7 +1419,7 @@
                 "role": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                            "$ref": "#/definitions/MemberRole"
                         }
                     ],
                     "example": "user"
@@ -1528,7 +1539,7 @@
                 "role": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                            "$ref": "#/definitions/MemberRole"
                         }
                     ],
                     "example": "user"
@@ -1542,17 +1553,6 @@
                     "example": "2026-01-01T12:00:00.00000+07:00"
                 }
             }
-        },
-        "github_com_hoshina-dev_custapi_internal_models.MemberRole": {
-            "type": "string",
-            "enum": [
-                "admin",
-                "user"
-            ],
-            "x-enum-varnames": [
-                "RoleAdmin",
-                "RoleUser"
-            ]
         }
     },
     "tags": [

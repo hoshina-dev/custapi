@@ -1028,7 +1028,7 @@ const docTemplate = `{
                 "role": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                            "$ref": "#/definitions/MemberRole"
                         }
                     ],
                     "example": "user"
@@ -1159,6 +1159,17 @@ const docTemplate = `{
                 }
             }
         },
+        "MemberRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "RoleAdmin",
+                "RoleUser"
+            ]
+        },
         "OrganizationCoord": {
             "type": "object",
             "required": [
@@ -1246,7 +1257,7 @@ const docTemplate = `{
                 "role": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                            "$ref": "#/definitions/MemberRole"
                         }
                     ],
                     "example": "admin"
@@ -1415,7 +1426,7 @@ const docTemplate = `{
                 "role": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                            "$ref": "#/definitions/MemberRole"
                         }
                     ],
                     "example": "user"
@@ -1535,7 +1546,7 @@ const docTemplate = `{
                 "role": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole"
+                            "$ref": "#/definitions/MemberRole"
                         }
                     ],
                     "example": "user"
@@ -1549,17 +1560,6 @@ const docTemplate = `{
                     "example": "2026-01-01T12:00:00.00000+07:00"
                 }
             }
-        },
-        "github_com_hoshina-dev_custapi_internal_models.MemberRole": {
-            "type": "string",
-            "enum": [
-                "admin",
-                "user"
-            ],
-            "x-enum-varnames": [
-                "RoleAdmin",
-                "RoleUser"
-            ]
         }
     },
     "tags": [

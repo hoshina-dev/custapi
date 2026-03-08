@@ -9,7 +9,7 @@ import (
 )
 
 // MemberRole represents a user's role within an organization
-type MemberRole string
+type MemberRole string // @name MemberRole
 
 const (
 	RoleAdmin MemberRole = "admin"

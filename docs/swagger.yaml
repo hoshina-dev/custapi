@@ -4,7 +4,7 @@ definitions:
     properties:
       role:
         allOf:
-        - $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole'
+        - $ref: '#/definitions/MemberRole'
         example: user
       user_id:
         example: 550e8400-e29b-41d4-a716-446655440000
@@ -98,6 +98,14 @@ definitions:
     required:
     - ids
     type: object
+  MemberRole:
+    enum:
+    - admin
+    - user
+    type: string
+    x-enum-varnames:
+    - RoleAdmin
+    - RoleUser
   OrganizationCoord:
     properties:
       id:
@@ -160,7 +168,7 @@ definitions:
     properties:
       role:
         allOf:
-        - $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole'
+        - $ref: '#/definitions/MemberRole'
         example: admin
     required:
     - role
@@ -284,7 +292,7 @@ definitions:
         type: string
       role:
         allOf:
-        - $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole'
+        - $ref: '#/definitions/MemberRole'
         example: user
     type: object
   UserResponse:
@@ -365,7 +373,7 @@ definitions:
         type: array
       role:
         allOf:
-        - $ref: '#/definitions/github_com_hoshina-dev_custapi_internal_models.MemberRole'
+        - $ref: '#/definitions/MemberRole'
         example: user
       social_media:
         example: '@john on Twitter, linkedin.com/in/john'
@@ -381,14 +389,6 @@ definitions:
     - research_categories
     - updated_at
     type: object
-  github_com_hoshina-dev_custapi_internal_models.MemberRole:
-    enum:
-    - admin
-    - user
-    type: string
-    x-enum-varnames:
-    - RoleAdmin
-    - RoleUser
 info:
   contact: {}
   description: A simple REST API for managing users and organizations
