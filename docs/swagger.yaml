@@ -100,12 +100,12 @@ definitions:
     type: object
   MemberRole:
     enum:
-    - admin
+    - manager
     - user
     type: string
     x-enum-varnames:
-    - RoleAdmin
-    - RoleUser
+    - RoleManager
+    - RoleMember
   OrganizationCoord:
     properties:
       id:
@@ -169,7 +169,7 @@ definitions:
       role:
         allOf:
         - $ref: '#/definitions/MemberRole'
-        example: admin
+        example: manager
     required:
     - role
     type: object
@@ -265,6 +265,10 @@ definitions:
         items:
           type: string
         type: array
+      role:
+        allOf:
+        - $ref: '#/definitions/UserRole'
+        example: user
       social_media:
         example: '@john on Twitter, linkedin.com/in/john'
         type: string
@@ -278,6 +282,7 @@ definitions:
     - name
     - password
     - research_categories
+    - role
     - updated_at
     type: object
   UserMembershipResponse:
@@ -326,6 +331,10 @@ definitions:
         items:
           type: string
         type: array
+      role:
+        allOf:
+        - $ref: '#/definitions/UserRole'
+        example: user
       social_media:
         example: '@john on Twitter, linkedin.com/in/john'
         type: string
@@ -338,8 +347,17 @@ definitions:
     - id
     - name
     - research_categories
+    - role
     - updated_at
     type: object
+  UserRole:
+    enum:
+    - admin
+    - user
+    type: string
+    x-enum-varnames:
+    - UserRoleAdmin
+    - UserRoleUser
   UserWithRoleResponse:
     properties:
       avatar_url:
@@ -357,6 +375,10 @@ definitions:
       id:
         example: 550e8400-e29b-41d4-a716-446655440000
         type: string
+      member_role:
+        allOf:
+        - $ref: '#/definitions/MemberRole'
+        example: user
       name:
         example: John Doe
         type: string
@@ -373,7 +395,7 @@ definitions:
         type: array
       role:
         allOf:
-        - $ref: '#/definitions/MemberRole'
+        - $ref: '#/definitions/UserRole'
         example: user
       social_media:
         example: '@john on Twitter, linkedin.com/in/john'
@@ -387,6 +409,7 @@ definitions:
     - id
     - name
     - research_categories
+    - role
     - updated_at
     type: object
 info:
@@ -588,7 +611,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Add an existing user to an organization with an optional admin
+      description: Add an existing user to an organization with an optional manager
         role
       parameters:
       - description: Organization ID
@@ -698,7 +721,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/ErrorResponse'
-      summary: Update a member's admin role
+      summary: Update a member's role within an organization
       tags:
       - organizations
   /organizations/batch:

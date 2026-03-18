@@ -19,9 +19,9 @@ func seedUsers(db *gorm.DB) error {
 	}
 
 	seeds := []userSeed{
-		{user: models.User{Email: "admin@chula.test", Name: "Chula Admin", Password: hash("password123")}, orgIdx: 0, role: models.RoleAdmin},
-		{user: models.User{Email: "user1@chula.test", Name: "Researcher 1", Password: hash("321drowssap")}, orgIdx: 0, role: models.RoleUser},
-		{user: models.User{Email: "researcher@qst.test", Name: "Sam the Scientist", Password: hash("123password")}, orgIdx: 1, role: models.RoleUser},
+		{user: models.User{Email: "admin@chula.test", Name: "Chula Admin", Password: hash("password123")}, orgIdx: 0, role: models.RoleManager},
+		{user: models.User{Email: "user1@chula.test", Name: "Researcher 1", Password: hash("321drowssap")}, orgIdx: 0, role: models.RoleMember},
+		{user: models.User{Email: "researcher@qst.test", Name: "Sam the Scientist", Password: hash("123password")}, orgIdx: 1, role: models.RoleMember},
 	}
 
 	for i := range seeds {
