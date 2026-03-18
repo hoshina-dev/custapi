@@ -315,7 +315,7 @@ func (h *OrgHandler) GetMembers(c *fiber.Ctx) error {
 // AddMember godoc
 //
 //	@Summary		Add a member to an organization
-//	@Description	Add an existing user to an organization with an optional admin role
+//	@Description	Add an existing user to an organization with an optional manager role
 //	@Tags			organizations
 //	@Accept			json
 //	@Produce		json
@@ -384,9 +384,9 @@ func (h *OrgHandler) RemoveMember(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }
 
-// SetAdmin godoc
+// SetRole godoc
 //
-//	@Summary	Update a member's admin role
+//	@Summary	Update a member's role within an organization
 //	@Tags		organizations
 //	@Accept		json
 //	@Produce	json

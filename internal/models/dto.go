@@ -11,6 +11,7 @@ type UserResponse struct {
 	ID                 uuid.UUID `json:"id" validate:"required" example:"550e8400-e29b-41d4-a716-446655440000"`
 	Email              string    `json:"email" validate:"required" example:"user@example.com"`
 	Name               string    `json:"name" validate:"required" example:"John Doe"`
+	Role               UserRole  `json:"role" validate:"required" example:"user"`
 	PhoneNumber        *string   `json:"phone_number,omitempty" example:"+1234567890"`
 	SocialMedia        *string   `json:"social_media,omitempty" example:"@john on Twitter, linkedin.com/in/john"`
 	Description        *string   `json:"description,omitempty" example:"Senior researcher specializing in quantum computing"`
@@ -25,6 +26,7 @@ type UserDetailResponse struct {
 	ID                 uuid.UUID `json:"id" validate:"required" example:"550e8400-e29b-41d4-a716-446655440000"`
 	Email              string    `json:"email" validate:"required" example:"user@example.com"`
 	Name               string    `json:"name" validate:"required" example:"John Doe"`
+	Role               UserRole  `json:"role" validate:"required" example:"user"`
 	Password           string    `json:"password" validate:"required" example:"$2a$10$hashedpassword"`
 	PhoneNumber        *string   `json:"phone_number,omitempty" example:"+1234567890"`
 	SocialMedia        *string   `json:"social_media,omitempty" example:"@john on Twitter, linkedin.com/in/john"`
@@ -35,10 +37,10 @@ type UserDetailResponse struct {
 	UpdatedAt          time.Time `json:"updated_at" validate:"required" example:"2026-01-01T12:00:00.00000+07:00"`
 } //	@name	UserDetailResponse
 
-// UserWithRoleResponse is the DTO for user responses within an organization context, includes role
+// UserWithRoleResponse is the DTO for user responses within an organization context, includes member role
 type UserWithRoleResponse struct {
 	UserResponse
-	Role MemberRole `json:"role" example:"user"`
+	MemberRole MemberRole `json:"member_role" example:"user"`
 } //	@name	UserWithRoleResponse
 
 // UserMembershipResponse represents a user's membership in an organization
@@ -78,7 +80,7 @@ type AddMemberRequest struct {
 
 // SetRoleRequest is the DTO for updating a member's role within an organization
 type SetRoleRequest struct {
-	Role MemberRole `json:"role" validate:"required" example:"admin"`
+	Role MemberRole `json:"role" validate:"required" example:"manager"`
 } //	@name	SetRoleRequest
 
 // OrganizationResponse is the DTO for organization responses

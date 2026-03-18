@@ -442,7 +442,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Add an existing user to an organization with an optional admin role",
+                "description": "Add an existing user to an organization with an optional manager role",
                 "consumes": [
                     "application/json"
                 ],
@@ -564,7 +564,7 @@ const docTemplate = `{
                 "tags": [
                     "organizations"
                 ],
-                "summary": "Update a member's admin role",
+                "summary": "Update a member's role within an organization",
                 "parameters": [
                     {
                         "type": "string",
@@ -1162,12 +1162,12 @@ const docTemplate = `{
         "MemberRole": {
             "type": "string",
             "enum": [
-                "admin",
+                "manager",
                 "user"
             ],
             "x-enum-varnames": [
-                "RoleAdmin",
-                "RoleUser"
+                "RoleManager",
+                "RoleMember"
             ]
         },
         "OrganizationCoord": {
@@ -1260,7 +1260,7 @@ const docTemplate = `{
                             "$ref": "#/definitions/MemberRole"
                         }
                     ],
-                    "example": "admin"
+                    "example": "manager"
                 }
             }
         },
@@ -1353,6 +1353,7 @@ const docTemplate = `{
                 "name",
                 "password",
                 "research_categories",
+                "role",
                 "updated_at"
             ],
             "properties": {
@@ -1399,6 +1400,14 @@ const docTemplate = `{
                         "Cryogenics"
                     ]
                 },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    ],
+                    "example": "user"
+                },
                 "social_media": {
                     "type": "string",
                     "example": "@john on Twitter, linkedin.com/in/john"
@@ -1441,66 +1450,7 @@ const docTemplate = `{
                 "id",
                 "name",
                 "research_categories",
-                "updated_at"
-            ],
-            "properties": {
-                "avatar_url": {
-                    "type": "string",
-                    "example": "https://example.com/avatar.jpg"
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2026-01-01T12:00:00.00000+07:00"
-                },
-                "description": {
-                    "type": "string",
-                    "example": "Senior researcher specializing in quantum computing"
-                },
-                "email": {
-                    "type": "string",
-                    "example": "user@example.com"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "John Doe"
-                },
-                "phone_number": {
-                    "type": "string",
-                    "example": "+1234567890"
-                },
-                "research_categories": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "example": [
-                        "QuantumComputing",
-                        "Qiskit",
-                        "Cryogenics"
-                    ]
-                },
-                "social_media": {
-                    "type": "string",
-                    "example": "@john on Twitter, linkedin.com/in/john"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2026-01-01T12:00:00.00000+07:00"
-                }
-            }
-        },
-        "UserWithRoleResponse": {
-            "type": "object",
-            "required": [
-                "created_at",
-                "email",
-                "id",
-                "name",
-                "research_categories",
+                "role",
                 "updated_at"
             ],
             "properties": {
@@ -1546,7 +1496,95 @@ const docTemplate = `{
                 "role": {
                     "allOf": [
                         {
+                            "$ref": "#/definitions/UserRole"
+                        }
+                    ],
+                    "example": "user"
+                },
+                "social_media": {
+                    "type": "string",
+                    "example": "@john on Twitter, linkedin.com/in/john"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-01-01T12:00:00.00000+07:00"
+                }
+            }
+        },
+        "UserRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "UserRoleAdmin",
+                "UserRoleUser"
+            ]
+        },
+        "UserWithRoleResponse": {
+            "type": "object",
+            "required": [
+                "created_at",
+                "email",
+                "id",
+                "name",
+                "research_categories",
+                "role",
+                "updated_at"
+            ],
+            "properties": {
+                "avatar_url": {
+                    "type": "string",
+                    "example": "https://example.com/avatar.jpg"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-01-01T12:00:00.00000+07:00"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Senior researcher specializing in quantum computing"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "member_role": {
+                    "allOf": [
+                        {
                             "$ref": "#/definitions/MemberRole"
+                        }
+                    ],
+                    "example": "user"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "+1234567890"
+                },
+                "research_categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "QuantumComputing",
+                        "Qiskit",
+                        "Cryogenics"
+                    ]
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/UserRole"
                         }
                     ],
                     "example": "user"

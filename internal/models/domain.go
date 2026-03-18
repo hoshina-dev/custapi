@@ -12,8 +12,16 @@ import (
 type MemberRole string // @name MemberRole
 
 const (
-	RoleAdmin MemberRole = "admin"
-	RoleUser  MemberRole = "user"
+	RoleManager MemberRole = "manager"
+	RoleMember  MemberRole = "user"
+)
+
+// UserRole represents a user's site-level role
+type UserRole string // @name UserRole
+
+const (
+	UserRoleAdmin UserRole = "admin"
+	UserRoleUser  UserRole = "user"
 )
 
 // User represents a user in the system
@@ -22,6 +30,7 @@ type User struct {
 	Email              string
 	Name               string
 	Password           string
+	Role               UserRole           `gorm:"type:varchar(50);default:'user'"`
 	PhoneNumber        *string
 	SocialMedia        *string
 	Description        *string

@@ -26,23 +26,23 @@ FROM pwd, (VALUES
 ON CONFLICT (email) DO NOTHING;
 
 -- Seed user_organizations (many-to-many with role)
--- Ensures each organization has at least one admin
+-- Ensures each organization has at least one manager
 INSERT INTO user_organizations (user_id, organization_id, role)
 SELECT u.id, o.id, v.role
 FROM (VALUES
-    ('alice@chula.ac.th',    'Chulalongkorn University',                  'admin'),
+    ('alice@chula.ac.th',    'Chulalongkorn University',                  'manager'),
     ('charlie@chula.ac.th',  'Chulalongkorn University',                  'user'),
-    ('bob@sut.ac.th',        'Suranaree University of Technology',        'admin'),
-    ('diana@nus.edu.sg',     'School of Computing, NUS',                  'admin'),
-    ('eve@u-tokyo.ac.jp',    'Tokyo University',                          'admin'),
-    ('frank@titech.ac.jp',   'Tokyo Institute of Technology',             'admin'),
+    ('bob@sut.ac.th',        'Suranaree University of Technology',        'manager'),
+    ('diana@nus.edu.sg',     'School of Computing, NUS',                  'manager'),
+    ('eve@u-tokyo.ac.jp',    'Tokyo University',                          'manager'),
+    ('frank@titech.ac.jp',   'Tokyo Institute of Technology',             'manager'),
     ('hiroshi@ethz.ch',      'Tokyo Institute of Technology',             'user'),
     ('grace@ethz.ch',        'ETH Zurich',                                'user'),
     ('hiroshi@ethz.ch',      'ETH Zurich',                                'user'),
-    ('walter.white@ethz.ch', 'ETH Zurich',                                'admin'),
+    ('walter.white@ethz.ch', 'ETH Zurich',                                'manager'),
     ('ivan@mit.edu',         'Massachusetts Institute of Technology',     'user'),
-    ('julia@mit.edu',        'Massachusetts Institute of Technology',     'admin'),
-    ('kai@technion.ac.il',   'Technion - Israel Institute of Technology', 'admin')
+    ('julia@mit.edu',        'Massachusetts Institute of Technology',     'manager'),
+    ('kai@technion.ac.il',   'Technion - Israel Institute of Technology', 'manager')
 ) AS v(email, org_name, role)
 JOIN users u ON u.email = v.email AND u.deleted_at IS NULL
 JOIN organizations o ON o.name = v.org_name AND o.deleted_at IS NULL

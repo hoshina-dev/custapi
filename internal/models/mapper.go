@@ -87,6 +87,7 @@ func (user *User) ToResponse() UserResponse {
 		ID:                 user.ID,
 		Email:              user.Email,
 		Name:               user.Name,
+		Role:               user.Role,
 		PhoneNumber:        user.PhoneNumber,
 		SocialMedia:        user.SocialMedia,
 		Description:        user.Description,
@@ -102,6 +103,7 @@ func (user *User) ToDetailResponse() UserDetailResponse {
 		ID:                 user.ID,
 		Email:              user.Email,
 		Name:               user.Name,
+		Role:               user.Role,
 		Password:           user.Password,
 		PhoneNumber:        user.PhoneNumber,
 		SocialMedia:        user.SocialMedia,
@@ -116,7 +118,7 @@ func (user *User) ToDetailResponse() UserDetailResponse {
 func (user *User) ToWithRoleResponse(role MemberRole) UserWithRoleResponse {
 	return UserWithRoleResponse{
 		UserResponse: user.ToResponse(),
-		Role:         role,
+		MemberRole:   role,
 	}
 }
 
