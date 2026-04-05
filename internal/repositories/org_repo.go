@@ -109,9 +109,10 @@ func (r *organizationRepository) Search(ctx context.Context, query string, limit
 func (r *organizationRepository) FindMembers(ctx context.Context, orgID uuid.UUID) ([]models.UserOrganization, error) {
 	var memberships []models.UserOrganization
 	err := r.db.WithContext(ctx).
-		Where("organization_id = ?", orgID).
+		Where("user_organizations.organization_id = ?", orgID).
+		Joins("JOIN users ON users.id = user_organizations.user_id AND users.deleted_at IS NULL").
 		Preload("User").
-		Order("created_at ASC").
+		Order("user_organizations.created_at ASC").
 		Find(&memberships).Error
 	return memberships, err
 }

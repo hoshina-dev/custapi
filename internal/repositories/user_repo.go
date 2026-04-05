@@ -74,9 +74,10 @@ func (r *userRepository) FindAll(ctx context.Context) ([]models.User, error) {
 func (r *userRepository) FindUserOrganizations(ctx context.Context, userID uuid.UUID) ([]models.UserOrganization, error) {
 	var memberships []models.UserOrganization
 	err := r.db.WithContext(ctx).
-		Where("user_id = ?", userID).
+		Where("user_organizations.user_id = ?", userID).
+		Joins("JOIN organizations ON organizations.id = user_organizations.organization_id AND organizations.deleted_at IS NULL").
 		Preload("Organization").
-		Order("created_at DESC").
+		Order("user_organizations.created_at DESC").
 		Find(&memberships).Error
 	return memberships, err
 }
