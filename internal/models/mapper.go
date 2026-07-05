@@ -104,7 +104,6 @@ func (user *User) ToDetailResponse() UserDetailResponse {
 		Email:              user.Email,
 		Name:               user.Name,
 		Role:               user.Role,
-		Password:           user.Password,
 		PhoneNumber:        user.PhoneNumber,
 		SocialMedia:        user.SocialMedia,
 		Description:        user.Description,

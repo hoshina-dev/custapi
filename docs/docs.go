@@ -15,6 +15,64 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/verify": {
+            "post": {
+                "description": "Verify an email + password against the stored hash. Returns the user (without password) on success, 401 on failure. Used by the BFF for login so the password hash never leaves this service.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Verify user credentials",
+                "parameters": [
+                    {
+                        "description": "Credentials to verify",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/VerifyCredentialsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/organizations": {
             "get": {
                 "description": "Get a list of all organizations",
@@ -1351,7 +1409,6 @@ const docTemplate = `{
                 "email",
                 "id",
                 "name",
-                "password",
                 "research_categories",
                 "role",
                 "updated_at"
@@ -1380,10 +1437,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "John Doe"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "$2a$10$hashedpassword"
                 },
                 "phone_number": {
                     "type": "string",
@@ -1596,6 +1649,23 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string",
                     "example": "2026-01-01T12:00:00.00000+07:00"
+                }
+            }
+        },
+        "VerifyCredentialsRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "PassWord123!"
                 }
             }
         }

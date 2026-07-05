@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
 	"github.com/hoshina-dev/custapi/internal/repositories"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // UserService defines user business logic operations
@@ -14,6 +15,7 @@ type UserService interface {
 	CreateUser(ctx context.Context, req *models.CreateUserRequest) (*models.User, error)
 	GetUser(ctx context.Context, id uuid.UUID) (*models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
+	VerifyCredentials(ctx context.Context, email, password string) (*models.User, error)
 	ListUsers(ctx context.Context) ([]models.User, error)
 	GetUserOrganizations(ctx context.Context, userID uuid.UUID) ([]models.UserOrganization, error)
 	Update(ctx context.Context, id uuid.UUID, req *models.UpdateUserRequest) (*models.User, error)
@@ -57,6 +59,24 @@ func (s *userService) GetUser(ctx context.Context, id uuid.UUID) (*models.User, 
 // GetUserByEmail retrieves a user by email address
 func (s *userService) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	return s.userRepo.FindByEmail(ctx, email)
+}
+
+// VerifyCredentials returns the user if the email exists and the password
+// matches the stored bcrypt hash. Returns (nil, nil) for a non-existent
+// user or a wrong password (indistinguishable to the caller), and
+// (nil, err) only for unexpected errors.
+func (s *userService) VerifyCredentials(ctx context.Context, email, password string) (*models.User, error) {
+	user, err := s.userRepo.FindByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, nil
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return nil, nil
+	}
+	return user, nil
 }
 
 // ListUsers retrieves all users

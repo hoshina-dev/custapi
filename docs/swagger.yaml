@@ -251,9 +251,6 @@ definitions:
       name:
         example: John Doe
         type: string
-      password:
-        example: $2a$10$hashedpassword
-        type: string
       phone_number:
         example: "+1234567890"
         type: string
@@ -280,7 +277,6 @@ definitions:
     - email
     - id
     - name
-    - password
     - research_categories
     - role
     - updated_at
@@ -412,12 +408,64 @@ definitions:
     - role
     - updated_at
     type: object
+  VerifyCredentialsRequest:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: PassWord123!
+        type: string
+    required:
+    - email
+    - password
+    type: object
 info:
   contact: {}
   description: A simple REST API for managing users and organizations
   title: Customer API
   version: "1.0"
 paths:
+  /auth/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verify an email + password against the stored hash. Returns the
+        user (without password) on success, 401 on failure. Used by the BFF for login
+        so the password hash never leaves this service.
+      parameters:
+      - description: Credentials to verify
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/VerifyCredentialsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Verify user credentials
+      tags:
+      - users
   /organizations:
     get:
       consumes:

@@ -58,6 +58,38 @@ func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(user.ToResponse())
 }
 
+// VerifyCredentials godoc
+//
+//	@Summary		Verify user credentials
+//	@Description	Verify an email + password against the stored hash. Returns the user (without password) on success, 401 on failure. Used by the BFF for login so the password hash never leaves this service.
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			credentials	body		models.VerifyCredentialsRequest	true	"Credentials to verify"
+//	@Success		200			{object}	models.UserResponse
+//	@Failure		400			{object}	models.ErrorResponse
+//	@Failure		401			{object}	models.ErrorResponse
+//	@Failure		422			{object}	models.ErrorResponse
+//	@Failure		500			{object}	models.ErrorResponse
+//	@Router			/auth/verify [post]
+func (h *UserHandler) VerifyCredentials(c *fiber.Ctx) error {
+	req := new(models.VerifyCredentialsRequest)
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid json payload"})
+	}
+	if err := h.validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
+	}
+	user, err := h.userService.VerifyCredentials(c.Context(), req.Email, req.Password)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: "failed to verify credentials"})
+	}
+	if user == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{Error: "invalid email or password"})
+	}
+	return c.JSON(user.ToResponse())
+}
+
 // GetUsers godoc
 //
 //	@Summary		Get all users

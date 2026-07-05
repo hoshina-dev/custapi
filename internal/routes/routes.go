@@ -40,6 +40,10 @@ func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *
 		user.Patch("/id/:id", userHandler.UpdateUser)
 		user.Delete("/id/:id", userHandler.DeleteUser)
 
+		// Auth routes
+		auth := v1.Group("/auth")
+		auth.Post("/verify", userHandler.VerifyCredentials)
+
 		// Organizations routes
 		org := v1.Group("/organizations")
 		org.Get("/", orgHandler.GetOrganizations)
