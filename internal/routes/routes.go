@@ -11,10 +11,10 @@ import (
 )
 
 // SetupRoutes configures all API routes
-func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *handlers.OrgHandler) {
+func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *handlers.OrgHandler, corsOrigins string) {
 	// Middleware
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
+		AllowOrigins: corsOrigins,
 	}))
 	app.Use(middleware.Logger())
 	app.Use(middleware.ErrorHandler())

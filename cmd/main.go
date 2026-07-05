@@ -60,7 +60,7 @@ func main() {
 	orgHandler := handlers.NewOrgHandler(orgService)
 
 	// Setup routes
-	routes.SetupRoutes(app, userHandler, orgHandler)
+	routes.SetupRoutes(app, userHandler, orgHandler, cfg.CorsOrigins)
 
 	// Start server in a goroutine
 	go func() {

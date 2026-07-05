@@ -13,6 +13,7 @@ import (
 type Config struct {
 	Port           int
 	DataSourceName string
+	CorsOrigins    string
 }
 
 // Load loads configuration from environment variables
@@ -42,6 +43,7 @@ func Load() *Config {
 	return &Config{
 		Port:           port,
 		DataSourceName: dsn,
+		CorsOrigins:    getEnv("CORS_ORIGINS", "http://localhost:3000"),
 	}
 }
 
