@@ -466,6 +466,20 @@ paths:
       summary: Verify user credentials
       tags:
       - users
+  /health:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Liveness probe
+      tags:
+      - health
   /organizations:
     get:
       consumes:
@@ -864,6 +878,26 @@ paths:
       summary: Search organizations
       tags:
       - organizations
+  /ready:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "503":
+          description: Service Unavailable
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Readiness probe
+      tags:
+      - health
   /users:
     get:
       consumes:
