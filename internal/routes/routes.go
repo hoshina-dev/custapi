@@ -11,13 +11,16 @@ import (
 )
 
 // SetupRoutes configures all API routes
-func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *handlers.OrgHandler, corsOrigins string) {
+func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *handlers.OrgHandler, healthHandler *handlers.HealthHandler, corsOrigins string) {
 	// Middleware
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: corsOrigins,
 	}))
 	app.Use(middleware.Logger())
 	app.Use(middleware.ErrorHandler())
+
+	app.Get("/health", healthHandler.Health)
+	app.Get("/ready", healthHandler.Ready)
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 	fmt.Println("📖 Swagger docs available at http://localhost:8080/swagger")
