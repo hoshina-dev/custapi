@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/hoshina-dev/custapi/docs"
@@ -15,6 +17,7 @@ import (
 	"github.com/hoshina-dev/custapi/internal/repositories"
 	"github.com/hoshina-dev/custapi/internal/routes"
 	"github.com/hoshina-dev/custapi/internal/services"
+	"github.com/hoshina-dev/custapi/internal/telemetry"
 )
 
 // @title				Customer API
@@ -30,6 +33,14 @@ import (
 func main() {
 	// Load configuration
 	cfg := config.Load()
+
+	// Wire up tracing/metrics before anything else touches the network or
+	// the database, so both are covered from the very first request.
+	ctx := context.Background()
+	shutdownTelemetry, err := telemetry.Setup(ctx, cfg.Telemetry)
+	if err != nil {
+		log.Fatalf("Failed to set up telemetry: %v", err)
+	}
 
 	// Initialize database
 	db := database.ConnectDB(cfg.DataSourceName)
@@ -79,6 +90,14 @@ func main() {
 	log.Println("Shutting down server...")
 	if err := app.Shutdown(); err != nil {
 		log.Fatalf("Failed to shutdown gracefully: %v", err)
+	}
+
+	// Flush any buffered spans/metrics before exiting so the final
+	// requests of this process aren't silently dropped.
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := shutdownTelemetry(shutdownCtx); err != nil {
+		log.Printf("Failed to shut down telemetry cleanly: %v", err)
 	}
 
 	log.Println("Server stopped")

@@ -1,0 +1,79 @@
+{
+  "family": "custapi",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/custapi-task-role",
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/custapi-execution-role",
+  "containerDefinitions": [
+    {
+      "name": "custapi",
+      "image": "ghcr.io/<owner>/custapi:latest",
+      "essential": true,
+      "portMappings": [{ "containerPort": 8080, "protocol": "tcp" }],
+      "dependsOn": [
+        { "containerName": "aws-otel-collector", "condition": "START" }
+      ],
+      "environment": [
+        { "name": "PORT", "value": "8080" },
+        { "name": "OTEL_ENABLED", "value": "true" },
+        { "name": "OTEL_SERVICE_NAME", "value": "custapi" },
+        { "name": "DEPLOYMENT_ENVIRONMENT", "value": "production" },
+        {
+          "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+          "value": "localhost:4317"
+        },
+        { "name": "OTEL_EXPORTER_OTLP_INSECURE", "value": "true" },
+        { "name": "OTEL_TRACES_SAMPLER_RATIO", "value": "1.0" },
+        { "name": "OTEL_METRIC_EXPORT_INTERVAL_MS", "value": "60000" }
+      ],
+      "secrets": [
+        {
+          "name": "DATA_SOURCE_NAME",
+          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/custapi/data-source-name"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/custapi",
+          "awslogs-region": "<REGION>",
+          "awslogs-stream-prefix": "app"
+        }
+      }
+    },
+    {
+      "name": "aws-otel-collector",
+      "image": "public.ecr.aws/aws-observability/aws-otel-collector:latest",
+      "essential": true,
+      "command": [
+        "--config=env:AOT_CONFIG_CONTENT"
+      ],
+      "secrets": [
+        {
+          "name": "AOT_CONFIG_CONTENT",
+          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/custapi/otel-collector-config"
+        }
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:13133/ || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 10
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/custapi",
+          "awslogs-region": "<REGION>",
+          "awslogs-stream-prefix": "adot"
+        }
+      }
+    }
+  ]
+}

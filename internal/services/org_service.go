@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
 	"github.com/hoshina-dev/custapi/internal/repositories"
+	"github.com/hoshina-dev/custapi/internal/telemetry"
 )
 
 // OrganizationService defines organization business logic operations
@@ -45,6 +46,7 @@ func (s *organizationService) CreateOrganization(ctx context.Context, req *model
 		return nil, err
 	}
 
+	telemetry.RecordOrganizationCreated(ctx)
 	return org, nil
 }
 
@@ -78,7 +80,11 @@ func (s *organizationService) UpdateOrganization(ctx context.Context, id uuid.UU
 }
 
 func (s *organizationService) DeleteOrganization(ctx context.Context, id uuid.UUID) error {
-	return s.orgRepo.Delete(ctx, id)
+	if err := s.orgRepo.Delete(ctx, id); err != nil {
+		return err
+	}
+	telemetry.RecordOrganizationDeleted(ctx)
+	return nil
 }
 
 // SearchOrganizations searches organizations by name

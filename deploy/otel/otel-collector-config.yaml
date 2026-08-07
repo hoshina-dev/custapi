@@ -1,0 +1,60 @@
+# ADOT (AWS Distro for OpenTelemetry) Collector config for the custapi ECS
+# sidecar. Receives OTLP/gRPC + OTLP/HTTP from the app container over
+# localhost, forwards traces to AWS X-Ray and metrics to CloudWatch (as EMF
+# log events, which CloudWatch converts into metrics automatically).
+#
+# The ADOT collector image already ships a default config
+# (/etc/ecs/ecs-default-config.yaml) that does roughly this. Use this file
+# instead when you want a fixed namespace/log group or extra processors.
+# See docs/observability.md for how to hand this file to the sidecar
+# (SSM Parameter Store + AOT_CONFIG_CONTENT, or bake it into a custom image).
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 5s
+  # Enriches every span/metric with aws.ecs.*, cloud.*, and container.*
+  # resource attributes read from the ECS Task Metadata endpoint, in case
+  # the app container's own ECS resource detector attributes are ever
+  # missing or overridden.
+  resourcedetection/ecs:
+    detectors: [env, ecs]
+    timeout: 2s
+
+exporters:
+  awsxray:
+    region: ${AWS_REGION}
+  awsemf:
+    region: ${AWS_REGION}
+    namespace: CustAPI
+    log_group_name: "/ecs/custapi"
+    log_stream_name: "{TaskId}"
+    resource_to_telemetry_conversion:
+      enabled: true
+    dimension_rollup_option: NoDimensionRollup
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+service:
+  extensions: [health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resourcedetection/ecs, batch]
+      exporters: [awsxray]
+    metrics:
+      receivers: [otlp]
+      processors: [resourcedetection/ecs, batch]
+      exporters: [awsemf]
+  telemetry:
+    logs:
+      level: info
