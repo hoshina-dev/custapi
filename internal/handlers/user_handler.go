@@ -50,7 +50,7 @@ func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
 	}
 
-	user, err := h.userService.CreateUser(c.Context(), req)
+	user, err := h.userService.CreateUser(c.UserContext(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: "failed to create user"})
 	}
@@ -80,7 +80,7 @@ func (h *UserHandler) VerifyCredentials(c *fiber.Ctx) error {
 	if err := h.validate.Struct(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
 	}
-	user, err := h.userService.VerifyCredentials(c.Context(), req.Email, req.Password)
+	user, err := h.userService.VerifyCredentials(c.UserContext(), req.Email, req.Password)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: "failed to verify credentials"})
 	}
@@ -101,7 +101,7 @@ func (h *UserHandler) VerifyCredentials(c *fiber.Ctx) error {
 //	@Failure		500	{object}	models.ErrorResponse
 //	@Router			/users [get]
 func (h *UserHandler) GetUsers(c *fiber.Ctx) error {
-	users, err := h.userService.ListUsers(c.Context())
+	users, err := h.userService.ListUsers(c.UserContext())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
@@ -133,7 +133,7 @@ func (h *UserHandler) GetUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
 	}
 
-	user, err := h.userService.GetUser(c.Context(), id)
+	user, err := h.userService.GetUser(c.UserContext(), id)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
@@ -168,7 +168,7 @@ func (h *UserHandler) GetUserByEmail(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid email format"})
 	}
 
-	user, err := h.userService.GetUserByEmail(c.Context(), email)
+	user, err := h.userService.GetUserByEmail(c.UserContext(), email)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
@@ -199,7 +199,7 @@ func (h *UserHandler) GetUserOrganizations(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
 	}
 
-	memberships, err := h.userService.GetUserOrganizations(c.Context(), id)
+	memberships, err := h.userService.GetUserOrganizations(c.UserContext(), id)
 	if err != nil {
 		if err.Error() == "user not found" {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
@@ -245,7 +245,7 @@ func (h *UserHandler) UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
 	}
 
-	user, err := h.userService.Update(c.Context(), id, req)
+	user, err := h.userService.Update(c.UserContext(), id, req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
@@ -276,7 +276,7 @@ func (h *UserHandler) DeleteUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
 	}
 
-	if err := h.userService.Delete(c.Context(), id); err != nil {
+	if err := h.userService.Delete(c.UserContext(), id); err != nil {
 		if err.Error() == "user not found" {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
 		}
@@ -311,7 +311,7 @@ func (h *UserHandler) SearchUsers(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "limit must be non-negative"})
 	}
 
-	users, err := h.userService.SearchUsers(c.Context(), query, limit)
+	users, err := h.userService.SearchUsers(c.UserContext(), query, limit)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}

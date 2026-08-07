@@ -24,5 +24,16 @@ internal/              # Private application code
   ├── models/         # Domain models & DTOs
   ├── repositories/   # Data persistence layer
   ├── routes/         # Route definitions
-  └── services/       # Business logic layer
+  ├── services/       # Business logic layer
+  └── telemetry/      # OpenTelemetry tracing & metrics setup
+
+deploy/otel/            # ADOT collector config + example ECS task definition
 ```
+
+## Observability
+
+Traces and metrics are instrumented with OpenTelemetry and, in production,
+shipped through an ADOT collector sidecar to AWS X-Ray (traces) and
+CloudWatch (metrics). See [docs/observability.md](docs/observability.md) for
+how it's wired up, configuration env vars, and how to deploy the ADOT
+sidecar on ECS.

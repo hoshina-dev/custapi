@@ -2,7 +2,9 @@ package routes
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/gofiber/contrib/otelfiber/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
@@ -13,6 +15,19 @@ import (
 // SetupRoutes configures all API routes
 func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler, orgHandler *handlers.OrgHandler, healthHandler *handlers.HealthHandler, corsOrigins string) {
 	// Middleware
+	// otelfiber must run first so every downstream middleware/handler sees
+	// c.UserContext() carrying the request's span (used for trace
+	// propagation into GORM and to correlate logs below). It records both
+	// the http.server.* RED metrics and the request span, using whatever
+	// tracer/meter provider telemetry.Setup registered globally (or the
+	// SDK's no-op defaults if telemetry is disabled).
+	app.Use(otelfiber.Middleware(
+		otelfiber.WithNext(func(c *fiber.Ctx) bool {
+			// Skip noisy, low-value spans for the static docs UIs.
+			path := c.Path()
+			return strings.HasPrefix(path, "/swagger") || path == "/scalar"
+		}),
+	))
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: corsOrigins,
 	}))

@@ -46,7 +46,7 @@ func (h *OrgHandler) CreateOrganization(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
 	}
 
-	org, err := h.orgService.CreateOrganization(c.Context(), req)
+	org, err := h.orgService.CreateOrganization(c.UserContext(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: "failed to create organization"})
 	}
@@ -65,7 +65,7 @@ func (h *OrgHandler) CreateOrganization(c *fiber.Ctx) error {
 //	@Failure		500	{object}	models.ErrorResponse
 //	@Router			/organizations [get]
 func (h *OrgHandler) GetOrganizations(c *fiber.Ctx) error {
-	orgs, err := h.orgService.ListOrganizations(c.Context())
+	orgs, err := h.orgService.ListOrganizations(c.UserContext())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
@@ -96,7 +96,7 @@ func (h *OrgHandler) GetOrganization(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
 	}
 
-	org, err := h.orgService.GetOrganization(c.Context(), id)
+	org, err := h.orgService.GetOrganization(c.UserContext(), id)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
@@ -119,7 +119,7 @@ func (h *OrgHandler) GetOrganization(c *fiber.Ctx) error {
 //	@Failure		500	{object}	models.ErrorResponse
 //	@Router			/organizations/coordinates [get]
 func (h *OrgHandler) GetAllCoords(c *fiber.Ctx) error {
-	orgs, err := h.orgService.GetAllCoords(c.Context())
+	orgs, err := h.orgService.GetAllCoords(c.UserContext())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
@@ -162,7 +162,7 @@ func (h *OrgHandler) UpdateOrganization(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
 	}
 
-	org, err := h.orgService.UpdateOrganization(c.Context(), id, req)
+	org, err := h.orgService.UpdateOrganization(c.UserContext(), id, req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
@@ -193,7 +193,7 @@ func (h *OrgHandler) DeleteOrganization(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
 	}
 
-	if err := h.orgService.DeleteOrganization(c.Context(), id); err != nil {
+	if err := h.orgService.DeleteOrganization(c.UserContext(), id); err != nil {
 		if err.Error() == "organization not found" {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
 		}
@@ -226,7 +226,7 @@ func (h *OrgHandler) GetByIDs(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
 	}
 
-	orgs, err := h.orgService.GetByIDs(c.Context(), req.IDs)
+	orgs, err := h.orgService.GetByIDs(c.UserContext(), req.IDs)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
@@ -264,7 +264,7 @@ func (h *OrgHandler) SearchOrganizations(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "limit must be non-negative"})
 	}
 
-	orgs, err := h.orgService.SearchOrganizations(c.Context(), query, limit)
+	orgs, err := h.orgService.SearchOrganizations(c.UserContext(), query, limit)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{Error: err.Error()})
 	}
@@ -296,7 +296,7 @@ func (h *OrgHandler) GetMembers(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid organization id"})
 	}
 
-	memberships, err := h.orgService.ListMembers(c.Context(), orgID)
+	memberships, err := h.orgService.ListMembers(c.UserContext(), orgID)
 	if err != nil {
 		if err.Error() == "organization not found" {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
@@ -341,7 +341,7 @@ func (h *OrgHandler) AddMember(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(models.ErrorResponse{Error: err.Error()})
 	}
 
-	if err := h.orgService.AddMember(c.Context(), orgID, req); err != nil {
+	if err := h.orgService.AddMember(c.UserContext(), orgID, req); err != nil {
 		if err.Error() == "organization not found" {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
 		}
@@ -374,7 +374,7 @@ func (h *OrgHandler) RemoveMember(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid user id"})
 	}
 
-	if err := h.orgService.RemoveMember(c.Context(), orgID, userID); err != nil {
+	if err := h.orgService.RemoveMember(c.UserContext(), orgID, userID); err != nil {
 		if err.Error() == "member not found" {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
 		}
@@ -413,7 +413,7 @@ func (h *OrgHandler) SetRole(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{Error: "invalid json payload"})
 	}
 
-	if err := h.orgService.SetRole(c.Context(), orgID, userID, req.Role); err != nil {
+	if err := h.orgService.SetRole(c.UserContext(), orgID, userID, req.Role); err != nil {
 		if err.Error() == "member not found" {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{Error: err.Error()})
 		}

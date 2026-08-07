@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/hoshina-dev/custapi/internal/models"
 	"github.com/hoshina-dev/custapi/internal/repositories"
+	"github.com/hoshina-dev/custapi/internal/telemetry"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -48,6 +49,7 @@ func (s *userService) CreateUser(ctx context.Context, req *models.CreateUserRequ
 		return nil, err
 	}
 
+	telemetry.RecordUserCreated(ctx)
 	return user, nil
 }
 
@@ -73,7 +75,14 @@ func (s *userService) VerifyCredentials(ctx context.Context, email, password str
 	if user == nil {
 		return nil, nil
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+
+	// bcrypt is intentionally CPU-expensive; give it its own span since it
+	// won't show up in the (automatic) HTTP or DB spans otherwise, and it's
+	// a common source of tail latency under load.
+	_, span := telemetry.Tracer().Start(ctx, "bcrypt.CompareHashAndPassword")
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	span.End()
+	if err != nil {
 		return nil, nil
 	}
 	return user, nil
@@ -111,7 +120,11 @@ func (s *userService) Update(ctx context.Context, id uuid.UUID, req *models.Upda
 }
 
 func (s *userService) Delete(ctx context.Context, id uuid.UUID) error {
-	return s.userRepo.Delete(ctx, id)
+	if err := s.userRepo.Delete(ctx, id); err != nil {
+		return err
+	}
+	telemetry.RecordUserDeleted(ctx)
+	return nil
 }
 
 // SearchUsers searches users by name or email
