@@ -58,9 +58,10 @@ func main() {
 	// Initialize handlers
 	userHandler := handlers.NewUserHandler(userService)
 	orgHandler := handlers.NewOrgHandler(orgService)
+	healthHandler := handlers.NewHealthHandler(db)
 
 	// Setup routes
-	routes.SetupRoutes(app, userHandler, orgHandler, cfg.CorsOrigins)
+	routes.SetupRoutes(app, userHandler, orgHandler, healthHandler, cfg.CorsOrigins)
 
 	// Start server in a goroutine
 	go func() {
